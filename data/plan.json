@@ -5,10 +5,7 @@
   "season": "2026-27 Off-Season Programme",
   "preSeasonReturn": "2026-06-18",
   "stravaTeamUrl": "https://www.strava.com/",
-  "officialPdfs": [
-    { "label": "Full Summer Programme (PDF)", "file": "2010s Summer Program 2026-27.pdf" },
-    { "label": "Mobility + Activation (PDF)", "file": "Motherwell Mobilty + Activation.pdf" }
-  ],
+  "officialPdfs": [],
   "dayTypes": {
     "off":       { "label": "Day Off", "colour": "#9aa0a6", "blurb": "Rest day. Take it. Recovery is part of the plan." },
     "recovery":  { "label": "Recovery", "colour": "#2e9e5b", "blurb": "Light mobility work to keep you moving and aid recovery." },

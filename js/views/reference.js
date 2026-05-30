@@ -23,7 +23,8 @@ export function renderReference(container, ctx) {
       <div class="txt"><b>${esc(r.label)}</b><small>${esc(r.note)}</small></div>
     </div>`).join('');
 
-  const pdfs = (plan.officialPdfs || []).map((p) =>
+  const pdfList = plan.officialPdfs || [];
+  const pdfs = pdfList.map((p) =>
     `<a href="${esc(p.file)}" target="_blank" rel="noopener">${esc(p.label)} ↗</a>`).join('');
 
   container.innerHTML = `
@@ -39,9 +40,9 @@ export function renderReference(container, ctx) {
     <p class="section-title">RPE effort scale</p>
     <section class="card">${rpe}</section>
 
-    <p class="section-title">Official club documents</p>
-    <section class="card link-list">${pdfs || '<span class="muted">—</span>'}</section>
+    ${pdfs ? `<p class="section-title">Official club documents</p>
+    <section class="card link-list">${pdfs}</section>` : ''}
 
-    <p class="footnote">Programme provided by Motherwell FC. Questions: contact Stefan Armstrong.</p>
+    <p class="footnote">Programme provided by Motherwell FC.</p>
   `;
 }

@@ -34,10 +34,24 @@ jobs:
         with:
           enablement: true
 
+      - name: Assemble clean site
+        # Copy only the static site into _site, excluding the source PDFs
+        # (which contain a staff phone number), git data and CI config.
+        run: |
+          mkdir -p _site
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='_site' \
+            --exclude='*.pdf' \
+            --exclude='README.md' \
+            --exclude='data/plan.schema.md' \
+            ./ _site/
+
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
