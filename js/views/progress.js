@@ -3,7 +3,7 @@ import { stats, getSettings, setSetting, exportData, importData } from '../stora
 import { downloadICS, downloadProteinICS } from '../ics.js';
 import { todayISO, daysBetween, esc } from '../util.js';
 
-const APP_BUILD = 'v16 · 30 May';
+const APP_BUILD = 'v17 · 30 May';
 
 export function renderProgress(container, ctx) {
   const { plan } = ctx;

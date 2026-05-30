@@ -30,14 +30,13 @@ a { color: var(--claret); }
 /* Ensure the hidden attribute always wins over component display rules. */
 [hidden] { display: none !important; }
 
-/* ---------- Header ---------- */
+/* ---------- Header (slim) ---------- */
 .app-header {
   position: sticky; top: 0; z-index: 20;
-  display: flex; align-items: center; gap: 10px;
-  padding: max(8px, env(safe-area-inset-top)) 16px 8px;
+  display: flex; align-items: center; gap: 9px;
+  padding: max(6px, env(safe-area-inset-top)) 14px 6px;
   background: var(--claret);
   color: #fff;
-  min-height: var(--header-h);
 }
 
 @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.025); } 100% { transform: scale(1); } }
@@ -74,9 +73,10 @@ a { color: var(--claret); }
 .fuel-pop .plog__x { background: none; border: none; color: var(--muted); font-size: 19px; margin-left: 10px; cursor: pointer; }
 .fuel-pop .protein__empty { color: var(--muted); font-size: 13px; margin: 0; }
 .sess-actions { display: flex; gap: 12px; }
-.app-header .crest { border-radius: 6px; background: #fff3; flex: none; }
-.app-header__kicker { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--amber); display: block; }
-.app-header__title { font-size: 18px; margin: 0; font-weight: 700; }
+.app-header .crest { border-radius: 6px; flex: none; }
+.app-header__title { font-size: 16px; margin: 0; font-weight: 800; letter-spacing: .01em; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-header__meta { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--amber); white-space: nowrap; display: flex; align-items: baseline; gap: 4px; }
+.app-header__meta b { font-family: var(--font-display); font-weight: 400; font-size: 15px; }
 
 /* ---------- Main / layout ---------- */
 .app-main {

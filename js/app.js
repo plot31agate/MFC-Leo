@@ -4,17 +4,27 @@ import { renderToday } from './views/today.js';
 import { renderPlan, renderDay } from './views/plan.js';
 import { renderProgress } from './views/progress.js';
 import { renderReference } from './views/reference.js';
+import { todayISO, daysBetween } from './util.js';
 
 const app = document.getElementById('app');
 const titleEl = document.getElementById('header-title');
+const metaEl = document.getElementById('header-meta');
 
 const TITLES = {
-  today: "Today's Session",
-  plan: 'Training Plan',
-  progress: 'Your Progress',
-  reference: 'Training Guide',
-  day: 'Session Detail',
+  today: 'Today',
+  plan: 'Plan',
+  progress: 'Progress',
+  reference: 'Guide',
+  day: 'Session',
 };
+
+function setHeaderMeta(plan) {
+  if (!metaEl || !plan) return;
+  const days = daysBetween(todayISO(), plan.preSeasonReturn);
+  metaEl.innerHTML = days > 0
+    ? `<b>${days}</b> day${days === 1 ? '' : 's'} to pre-season`
+    : (days === 0 ? '⚽ Pre-season today!' : '⚽ Pre-season');
+}
 
 let ctx = null;
 
@@ -28,7 +38,7 @@ function setActiveTab(name) {
   document.querySelectorAll('.tabbar__item').forEach((el) => {
     el.classList.toggle('is-active', el.dataset.tab === name);
   });
-  titleEl.textContent = TITLES[name] || "Leo's Training";
+  titleEl.textContent = TITLES[name] || 'Today';
 }
 
 function render() {
@@ -56,6 +66,7 @@ async function start() {
   try {
     const plan = await loadPlan();
     ctx = { plan, refresh: render, navigate: (h) => { location.hash = h; } };
+    setHeaderMeta(plan);
   } catch (err) {
     app.innerHTML = `<div class="note">Couldn't load the training plan.<br><small>${err.message}</small></div>`;
     return;
