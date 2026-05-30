@@ -3,6 +3,8 @@ import { stats, getSettings, setSetting, exportData, importData } from '../stora
 import { downloadICS, downloadProteinICS } from '../ics.js';
 import { todayISO, daysBetween, esc } from '../util.js';
 
+const APP_BUILD = 'v11 · 30 May';
+
 export function renderProgress(container, ctx) {
   const { plan } = ctx;
   const st = stats(plan);
@@ -75,6 +77,8 @@ export function renderProgress(container, ctx) {
       <button class="btn btn--ghost btn--sm" id="import" style="margin-top:8px">⤒ Restore from backup</button>
       <input type="file" id="import-file" accept="application/json,.json" hidden />
     </section>
+
+    <p class="footnote center" style="margin-top:18px">Leo · Motherwell Training — build ${esc(APP_BUILD)}</p>
   `;
 
   container.querySelector('#rtime').addEventListener('change', (e) => setSetting('reminderTime', e.target.value));
