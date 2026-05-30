@@ -1,6 +1,6 @@
 // Progress, reminders (calendar export) and settings/backup.
 import { stats, getSettings, setSetting, exportData, importData } from '../storage.js';
-import { downloadICS } from '../ics.js';
+import { downloadICS, downloadProteinICS } from '../ics.js';
 import { typeInfo } from '../plan.js';
 import { esc } from '../util.js';
 
@@ -41,7 +41,18 @@ export function renderProgress(container, ctx) {
         ${[0, 15, 30, 60, 120].map((m) => `<option value="${m}" ${Number(s.reminderLeadMin) === m ? 'selected' : ''}>${m === 0 ? 'At start' : m + ' min before'}</option>`).join('')}
       </select>
       <div style="height:12px"></div>
-      <button class="btn btn--primary" id="add-cal">📅 Add reminders to calendar</button>
+      <button class="btn btn--primary" id="add-cal">📅 Add session reminders</button>
+    </section>
+
+    <p class="section-title">Protein reminders</p>
+    <section class="card">
+      <p class="ex-sub">Daily nudges to top up protein towards ${plan.proteinTargetG || 140}g. They pop up natively and open the app to log it.</p>
+      <label class="lbl">Reminder times</label>
+      <div class="meal-times">
+        ${s.mealReminderTimes.map((t, i) => `<input class="field meal-time" data-i="${i}" type="time" value="${esc(t)}" />`).join('')}
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn btn--primary" id="add-protein-cal">🍗 Add protein reminders</button>
     </section>
 
     <p class="section-title">Logging</p>
@@ -60,6 +71,11 @@ export function renderProgress(container, ctx) {
   container.querySelector('#rtime').addEventListener('change', (e) => setSetting('reminderTime', e.target.value));
   container.querySelector('#rlead').addEventListener('change', (e) => setSetting('reminderLeadMin', Number(e.target.value)));
   container.querySelector('#add-cal').addEventListener('click', () => downloadICS(plan));
+  container.querySelectorAll('.meal-time').forEach((inp) => inp.addEventListener('change', () => {
+    const times = Array.from(container.querySelectorAll('.meal-time')).map((x) => x.value).filter(Boolean);
+    setSetting('mealReminderTimes', times);
+  }));
+  container.querySelector('#add-protein-cal').addEventListener('click', () => downloadProteinICS(plan));
 
   container.querySelector('#export').addEventListener('click', () => {
     const blob = new Blob([exportData()], { type: 'application/json' });

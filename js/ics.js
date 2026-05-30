@@ -2,6 +2,7 @@
 // session into his iPhone calendar with a native alarm before each one.
 import { trainingDays, resolveRef, typeInfo } from './plan.js';
 import { getSettings } from './storage.js';
+import { todayISO } from './util.js';
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -94,11 +95,52 @@ function addMinutes(hhmm, mins) {
 }
 
 export function downloadICS(plan) {
-  const blob = new Blob([buildICS(plan)], { type: 'text/calendar;charset=utf-8' });
+  triggerDownload(buildICS(plan), 'leo-motherwell-training.ics');
+}
+
+// Daily recurring protein/meal reminders at the configured times.
+export function buildProteinICS(plan) {
+  const settings = getSettings();
+  const times = settings.mealReminderTimes || ['15:00', '18:00', '20:30'];
+  const target = plan.proteinTargetG || 140;
+  const until = (plan.preSeasonReturn || '2026-12-31').replace(/-/g, '') + 'T235900';
+  const startDate = todayISO();
+  const dtstamp = utcStamp();
+
+  const lines = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//MFC Leo Training//EN',
+    'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Leo · Protein reminders',
+  ];
+
+  times.forEach((t, idx) => {
+    lines.push(
+      'BEGIN:VEVENT',
+      `UID:mfc-protein-${idx}-${t.replace(':', '')}@leo-training`,
+      `DTSTAMP:${dtstamp}`,
+      `DTSTART:${localStamp(startDate, t)}`,
+      `DTEND:${localStamp(startDate, addMinutes(t, 15))}`,
+      `RRULE:FREQ=DAILY;UNTIL=${until}`,
+      fold(`SUMMARY:${escText(`🍗 Protein check — aim ${target}g`)}`),
+      fold(`DESCRIPTION:${escText('Behind on protein? Grab a shake, milk, yoghurt or a meal — then open the app to log it.')}`),
+      'BEGIN:VALARM', 'ACTION:DISPLAY', fold(`DESCRIPTION:${escText('Protein check')}`), 'TRIGGER:-PT0M', 'END:VALARM',
+      'END:VEVENT',
+    );
+  });
+
+  lines.push('END:VCALENDAR');
+  return lines.join('\r\n');
+}
+
+export function downloadProteinICS(plan) {
+  triggerDownload(buildProteinICS(plan), 'leo-protein-reminders.ics');
+}
+
+function triggerDownload(text, filename) {
+  const blob = new Blob([text], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'leo-motherwell-training.ics';
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   a.remove();

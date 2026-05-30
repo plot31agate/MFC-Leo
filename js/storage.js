@@ -53,9 +53,29 @@ export function removeProtein(dateIso, index) {
   return setDayField(dateIso, 'protein', log);
 }
 
+// ---- Per-task completion (keyed by component ref within a day) ----
+export function getTasks(dateIso) {
+  return getDay(dateIso).tasks || {};
+}
+export function setTask(dateIso, ref, done) {
+  const tasks = Object.assign({}, getTasks(dateIso));
+  if (done) tasks[ref] = true; else delete tasks[ref];
+  return setDayField(dateIso, 'tasks', tasks);
+}
+// How many of the given component refs are ticked done.
+export function taskCount(dateIso, refs) {
+  const tasks = getTasks(dateIso);
+  const done = refs.filter((r) => tasks[r]).length;
+  return { done, total: refs.length, all: refs.length > 0 && done === refs.length };
+}
+
 // ---- Settings ----
 export function getSettings() {
-  return Object.assign({ reminderTime: '09:00', reminderLeadMin: 60 }, readJSON(SETTINGS_KEY, {}));
+  return Object.assign({
+    reminderTime: '09:00',
+    reminderLeadMin: 60,
+    mealReminderTimes: ['15:00', '18:00', '20:30'],
+  }, readJSON(SETTINGS_KEY, {}));
 }
 export function setSetting(key, value) {
   const s = getSettings();

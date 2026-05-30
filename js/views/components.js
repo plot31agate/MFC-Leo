@@ -90,21 +90,28 @@ function renderBody(node, ctx = {}) {
 
 const KIND_LABELS = { run: 'Run / Pitch', gym: 'Gym', routine: 'Warm-up', exerciseList: '', nutrition: 'Fuel', substitutes: '' };
 
-// Always-open card (used on Today so nothing is hidden behind a tap).
+// Collapsible, checkable task card (used on Today). Collapsed by default so the
+// day reads as a scannable checklist; expand for the detail. ctx.ref is the
+// component reference (the task key) and ctx.done seeds the completed state.
 export function componentCard(node, order, ctx = {}) {
   const kindLabel = KIND_LABELS[node.kind] || '';
+  const done = !!ctx.done;
+  const ref = ctx.ref || '';
+  const checkable = !!ref;
   return `
-    <section class="sess">
-      <div class="sess__head">
+    <details class="sess ${done ? 'is-done' : ''}" data-ref="${esc(ref)}">
+      <summary class="sess__head">
+        ${checkable ? `<button class="sess__check ${done ? 'is-done' : ''}" data-check="${esc(ref)}" type="button" aria-label="Mark ${esc(node.title)} done">${done ? '✓' : ''}</button>` : ''}
         ${order ? `<span class="sess__num">${order}</span>` : ''}
         <div class="sess__titles">
           <h3 class="sess__title">${esc(node.title)}</h3>
           ${node.summary && node.kind === 'run' ? `<p class="sess__sub">${esc(node.summary)}</p>` : ''}
         </div>
         ${kindLabel ? `<span class="sess__tag">${kindLabel}</span>` : ''}
-      </div>
+        <span class="sess__chev">›</span>
+      </summary>
       <div class="sess__body">${renderBody(node, ctx)}</div>
-    </section>`;
+    </details>`;
 }
 
 // Collapsible component block with an order number.
