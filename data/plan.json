@@ -5,6 +5,17 @@
   "season": "2026-27 Off-Season Programme",
   "preSeasonReturn": "2026-06-18",
   "stravaTeamUrl": "https://www.strava.com/",
+  "proteinTargetG": 140,
+  "proteinFoods": [
+    { "label": "Protein shake", "g": 30 },
+    { "label": "Chicken breast", "g": 40 },
+    { "label": "Greek yoghurt", "g": 15 },
+    { "label": "2 eggs", "g": 12 },
+    { "label": "Glass of milk", "g": 10 },
+    { "label": "Tuna tin", "g": 25 },
+    { "label": "Cheese toastie", "g": 15 },
+    { "label": "Handful of nuts", "g": 7 }
+  ],
   "officialPdfs": [],
   "dayTypes": {
     "off":       { "label": "Day Off", "colour": "#9aa0a6", "blurb": "Rest day. Take it. Recovery is part of the plan." },

@@ -35,6 +35,24 @@ export function setDayField(dateIso, field, value) {
   return rec;
 }
 
+// ---- Protein log (per day) ----
+export function getProteinLog(dateIso) {
+  return getDay(dateIso).protein || [];
+}
+export function proteinTotal(dateIso) {
+  return getProteinLog(dateIso).reduce((s, e) => s + (Number(e.g) || 0), 0);
+}
+export function addProtein(dateIso, label, grams) {
+  const log = getProteinLog(dateIso).slice();
+  log.push({ label, g: Number(grams) || 0 });
+  return setDayField(dateIso, 'protein', log);
+}
+export function removeProtein(dateIso, index) {
+  const log = getProteinLog(dateIso).slice();
+  log.splice(index, 1);
+  return setDayField(dateIso, 'protein', log);
+}
+
 // ---- Settings ----
 export function getSettings() {
   return Object.assign({ reminderTime: '09:00', reminderLeadMin: 60 }, readJSON(SETTINGS_KEY, {}));
@@ -82,7 +100,17 @@ export function stats(plan) {
     }
   }
 
-  return { total, done, percent, byWeek, streak, pb };
+  // Protein: how many days hit the daily target.
+  const target = plan.proteinTargetG || 0;
+  let proteinDaysHit = 0;
+  if (target) {
+    for (const rec of Object.values(prog)) {
+      const tot = (rec.protein || []).reduce((s, e) => s + (Number(e.g) || 0), 0);
+      if (tot >= target) proteinDaysHit++;
+    }
+  }
+
+  return { total, done, percent, byWeek, streak, pb, proteinDaysHit };
 }
 
 function toSecs(mmss) {

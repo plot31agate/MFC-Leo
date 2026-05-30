@@ -25,6 +25,7 @@ export function renderProgress(container, ctx) {
       <div class="stat stat--amber"><div class="stat__num">${st.percent}%</div><div class="stat__lbl">Complete</div></div>
       <div class="stat"><div class="stat__num">${st.streak} 🔥</div><div class="stat__lbl">Day streak</div></div>
       <div class="stat"><div class="stat__num">${st.pb ? esc(st.pb.display) : '—'}</div><div class="stat__lbl">5km best</div></div>
+      <div class="stat stat--wide"><div class="stat__num">${st.proteinDaysHit}</div><div class="stat__lbl">Days you hit ${plan.proteinTargetG || 140}g protein</div></div>
     </div>
 
     <p class="section-title">By week</p>

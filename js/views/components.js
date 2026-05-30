@@ -88,6 +88,25 @@ function renderBody(node, ctx = {}) {
   }
 }
 
+const KIND_LABELS = { run: 'Run / Pitch', gym: 'Gym', routine: 'Warm-up', exerciseList: '', nutrition: 'Fuel', substitutes: '' };
+
+// Always-open card (used on Today so nothing is hidden behind a tap).
+export function componentCard(node, order, ctx = {}) {
+  const kindLabel = KIND_LABELS[node.kind] || '';
+  return `
+    <section class="sess">
+      <div class="sess__head">
+        ${order ? `<span class="sess__num">${order}</span>` : ''}
+        <div class="sess__titles">
+          <h3 class="sess__title">${esc(node.title)}</h3>
+          ${node.summary && node.kind === 'run' ? `<p class="sess__sub">${esc(node.summary)}</p>` : ''}
+        </div>
+        ${kindLabel ? `<span class="sess__tag">${kindLabel}</span>` : ''}
+      </div>
+      <div class="sess__body">${renderBody(node, ctx)}</div>
+    </section>`;
+}
+
 // Collapsible component block with an order number.
 export function componentHTML(node, order, ctx = {}) {
   const kindLabel = { run: 'Run / Pitch', gym: 'Gym', routine: 'Warm-up', exerciseList: '', nutrition: 'Fuel', substitutes: '' }[node.kind] || '';
