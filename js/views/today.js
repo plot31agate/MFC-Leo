@@ -1,11 +1,7 @@
-// The home screen: session-led checklist with a compact protein strip,
-// smart nudges, fuel and logging.
+// The home screen: a guided, tickable session checklist (protein now lives in
+// the global sticky bar in the app shell). Plus smart nudges and logging.
 import { resolveToday, resolveRef, typeInfo, rpeColour } from '../plan.js';
-import {
-  getDay, setDayDone, setDayField,
-  getProteinLog, proteinTotal, addProtein, removeProtein,
-  getTasks, setTask, taskCount,
-} from '../storage.js';
+import { getDay, setDayDone, setDayField, getTasks, setTask, taskCount } from '../storage.js';
 import { todayISO, prettyDate, parseISO, daysBetween, DOW_LONG, MONTHS } from '../util.js';
 import { componentCard, componentHTML } from './components.js';
 import { paintNudges } from './nudges.js';
@@ -27,10 +23,11 @@ export function renderToday(container, ctx) {
     const tasks = getTasks(exact.date);
     const tc = taskCount(exact.date, exact.components);
     const benchmark = exact.components.includes('runs.benchmark5k');
+    const firstOpen = exact.components.find((r) => !tasks[r]); // guided: open the current step
 
     const comps = exact.components.map((ref, i) => {
       const node = resolveRef(plan, ref);
-      return node ? componentCard(node, i + 1, { week: String(exact.week), ref, done: !!tasks[ref] }) : '';
+      return node ? componentCard(node, i + 1, { week: String(exact.week), ref, done: !!tasks[ref], open: ref === firstOpen }) : '';
     }).join('');
 
     const nut = resolveRef(plan, 'nutrition');
@@ -42,11 +39,12 @@ export function renderToday(container, ctx) {
 
       <div class="row-between" style="margin:20px 2px 10px">
         <h2 class="block-title" style="margin:0">Your session <span class="block-title__hint">— tick as you go</span></h2>
-        <button class="link-btn" id="mark-all">${tc.all ? 'Reset' : 'Mark all'}</button>
+        <div class="sess-actions">
+          <button class="link-btn" id="expand-all">Expand all</button>
+          <button class="link-btn" id="mark-all">${tc.all ? 'Reset' : 'Mark all'}</button>
+        </div>
       </div>
       ${comps}
-
-      ${proteinPlaceholder('strip')}
 
       ${nut ? `<h2 class="block-title">Food &amp; fuel</h2>${componentHTML(nut, null, {})}` : ''}
 
@@ -64,14 +62,13 @@ export function renderToday(container, ctx) {
       <a class="btn btn--strava" href="${esc(plan.stravaTeamUrl || 'https://www.strava.com')}" target="_blank" rel="noopener">Log runs &amp; gym on Strava ↗</a>
     `;
 
-    mountProtein(container.querySelector('#protein-mount'), ctx, iso, 'strip');
     paintNudges(container.querySelector('#nudges'), ctx, iso);
     bindLog(container, exact.date);
     bindTasks(container, ctx, iso, exact.components);
     return;
   }
 
-  // ---- Non-training days (protein stays prominent — no session competing) ----
+  // ---- Non-training days ----
   let title, blurb, emoji = '🛌';
   if (state === 'before') { title = 'Counting down'; blurb = `Programme starts ${prettyDate(day.date)} — ${daysBetween(iso, day.date)} day(s) to go. Rest up and recover. 🌴`; emoji = '🌴'; }
   else if (state === 'after') { title = 'Pre-Season!'; blurb = "Players have returned. You put the work in — go and show them, Leo. 💪"; emoji = '⚽'; }
@@ -82,14 +79,12 @@ export function renderToday(container, ctx) {
   container.innerHTML = `
     <div id="nudges"></div>
     ${heroHTML(kicker, title, blurb, null, plan, null)}
-    ${proteinPlaceholder('full')}
     <section class="card center">
       <div class="big-emoji">${emoji}</div>
-      <p class="muted">Recovery matters most on rest days — sleep well, eat well, and still hit your <b>${plan.proteinTargetG || 140}g protein</b>.</p>
+      <p class="muted">Recovery matters most on rest days — sleep well, eat well, and still hit your <b>${plan.proteinTargetG || 140}g protein</b> (log it in the bar above).</p>
     </section>
     <button class="btn btn--primary btn--big" id="go-plan">See the full plan</button>
   `;
-  mountProtein(container.querySelector('#protein-mount'), ctx, iso, 'full');
   paintNudges(container.querySelector('#nudges'), ctx, iso);
   container.querySelector('#go-plan').addEventListener('click', () => { location.hash = '#/plan'; });
 }
@@ -126,7 +121,7 @@ function bindLog(container, dateIso) {
   });
 }
 
-// ---------- Per-task ticks ----------
+// ---------- Per-task ticks (guided auto-advance) ----------
 function bindTasks(container, ctx, iso, refs) {
   const refresh = () => {
     const tc = taskCount(iso, refs);
@@ -154,9 +149,25 @@ function bindTasks(container, ctx, iso, refs) {
       card.classList.toggle('is-done', nowDone);
       btn.classList.toggle('is-done', nowDone);
       btn.textContent = nowDone ? '✓' : '';
-      if (nowDone) card.open = false;
+      if (nowDone) {
+        card.removeAttribute('open');
+        // guided: open the next still-to-do step
+        const tasksNow = getTasks(iso);
+        const next = [...container.querySelectorAll('.sess[data-ref]')].find((s) => !tasksNow[s.dataset.ref]);
+        if (next) next.setAttribute('open', '');
+      } else {
+        card.setAttribute('open', '');
+      }
       refresh();
     });
+  });
+
+  const expandBtn = container.querySelector('#expand-all');
+  expandBtn?.addEventListener('click', () => {
+    const ds = [...container.querySelectorAll('.sess')];
+    const anyClosed = ds.some((s) => !s.hasAttribute('open'));
+    ds.forEach((s) => { if (anyClosed) s.setAttribute('open', ''); else s.removeAttribute('open'); });
+    expandBtn.textContent = anyClosed ? 'Collapse all' : 'Expand all';
   });
 
   container.querySelector('#mark-all')?.addEventListener('click', () => {
@@ -165,81 +176,4 @@ function bindTasks(container, ctx, iso, refs) {
     refs.forEach((r) => setTask(iso, r, target));
     ctx.refresh();
   });
-}
-
-// ---------- Protein tracker ----------
-function proteinPlaceholder(variant) {
-  return `<section class="card card--protein ${variant === 'strip' ? 'card--protein-strip' : ''}"><div id="protein-mount"></div></section>`;
-}
-
-function proteinBodyHTML(plan, iso) {
-  const log = getProteinLog(iso);
-  return `
-    <div class="protein__body">
-      <div class="pchips">
-        ${(plan.proteinFoods || []).map((f) => `<button class="pchip" data-add="${f.g}" data-label="${esc(f.label)}" type="button">${esc(f.label)} <b>+${f.g}</b></button>`).join('')}
-        <button class="pchip pchip--alt" data-custom="1" type="button">+ Other</button>
-      </div>
-      <div class="pcustom" hidden>
-        <input class="field" id="pc-g" inputmode="numeric" placeholder="grams of protein" />
-        <button class="btn btn--sm btn--primary" id="pc-add" type="button">Add</button>
-      </div>
-      ${log.length ? `<ul class="plog">${log.map((e, i) => `<li><span>${esc(e.label)}</span><span class="plog__g">${e.g}g <button class="plog__x" data-rm="${i}" type="button" aria-label="Remove ${esc(e.label)}">×</button></span></li>`).join('')}</ul>` : '<p class="protein__empty">Nothing logged yet — tap a food above.</p>'}
-    </div>`;
-}
-
-function mountProtein(el, ctx, iso, variant) {
-  if (!el) return;
-  const { plan } = ctx;
-  const target = plan.proteinTargetG || 140;
-  const total = proteinTotal(iso);
-  const pct = Math.round(Math.min(total / target, 1) * 100);
-  const hit = total >= target;
-  const remaining = Math.max(target - total, 0);
-  const wasOpen = el.querySelector('details')?.hasAttribute('open') ?? false;
-
-  let summary;
-  if (variant === 'strip') {
-    summary = `
-      <summary class="pstrip__head">
-        <div class="pstrip__main">
-          <div class="pstrip__row">
-            <span class="pstrip__title">Protein <b>${total}/${target}g</b></span>
-            <span class="pstrip__hint ${hit ? 'is-hit' : ''}">${hit ? '✅ hit' : remaining + 'g to go'}</span>
-          </div>
-          <div class="bar bar--onclaret"><span class="${hit ? 'is-hit' : ''}" style="width:${pct}%"></span></div>
-        </div>
-        <span class="sess__chev">›</span>
-      </summary>`;
-  } else {
-    const C = 2 * Math.PI * 42;
-    const offset = C * (1 - Math.min(total / target, 1));
-    summary = `
-      <summary class="protein__top">
-        <div class="ring">
-          <svg viewBox="0 0 100 100" aria-hidden="true">
-            <circle class="ring__bg" cx="50" cy="50" r="42"/>
-            <circle class="ring__fg ${hit ? 'is-hit' : ''}" cx="50" cy="50" r="42" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"/>
-          </svg>
-          <div class="ring__label"><span class="ring__num">${total}</span><span class="ring__den">/ ${target}g</span></div>
-        </div>
-        <div class="protein__meta">
-          <p class="protein__title">Protein today</p>
-          <p class="protein__msg ${hit ? 'is-hit' : ''}">${hit ? '✅ Target smashed!' : `<b>${remaining}g</b> to go`}</p>
-          <p class="protein__hint">Tap to log food ⌄</p>
-        </div>
-      </summary>`;
-  }
-
-  el.innerHTML = `<details class="protein-more" ${wasOpen ? 'open' : ''}>${summary}${proteinBodyHTML(plan, iso)}</details>`;
-
-  const repaint = () => { mountProtein(el, ctx, iso, variant); paintNudges(document.getElementById('nudges'), ctx, iso); };
-  el.querySelectorAll('[data-add]').forEach((b) => b.addEventListener('click', () => { addProtein(iso, b.dataset.label, Number(b.dataset.add)); repaint(); }));
-  el.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => { removeProtein(iso, Number(b.dataset.rm)); repaint(); }));
-  const customBtn = el.querySelector('[data-custom]');
-  const customBox = el.querySelector('.pcustom');
-  customBtn?.addEventListener('click', () => { customBox.hidden = !customBox.hidden; if (!customBox.hidden) el.querySelector('#pc-g').focus(); });
-  const addCustom = () => { const v = Number(el.querySelector('#pc-g').value); if (v > 0) { addProtein(iso, 'Other', v); repaint(); } };
-  el.querySelector('#pc-add')?.addEventListener('click', addCustom);
-  el.querySelector('#pc-g')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') addCustom(); });
 }

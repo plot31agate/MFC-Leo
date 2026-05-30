@@ -98,8 +98,9 @@ export function componentCard(node, order, ctx = {}) {
   const done = !!ctx.done;
   const ref = ctx.ref || '';
   const checkable = !!ref;
+  const open = ctx.open ? ' open' : '';
   return `
-    <details class="sess ${done ? 'is-done' : ''}" data-ref="${esc(ref)}">
+    <details class="sess ${done ? 'is-done' : ''}" data-ref="${esc(ref)}"${open}>
       <summary class="sess__head">
         ${checkable ? `<button class="sess__check ${done ? 'is-done' : ''}" data-check="${esc(ref)}" type="button" aria-label="Mark ${esc(node.title)} done">${done ? '✓' : ''}</button>` : ''}
         ${order ? `<span class="sess__num">${order}</span>` : ''}

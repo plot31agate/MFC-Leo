@@ -3,7 +3,7 @@ import { stats, getSettings, setSetting, exportData, importData } from '../stora
 import { downloadICS, downloadProteinICS } from '../ics.js';
 import { todayISO, daysBetween, esc } from '../util.js';
 
-const APP_BUILD = 'v11 · 30 May';
+const APP_BUILD = 'v12 · 30 May';
 
 export function renderProgress(container, ctx) {
   const { plan } = ctx;
@@ -106,6 +106,7 @@ export function renderProgress(container, ctx) {
     if (!file) return;
     try {
       importData(await file.text());
+      ctx.updateProteinBar?.();
       ctx.refresh();
       alert('Backup restored.');
     } catch (err) {

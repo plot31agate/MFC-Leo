@@ -30,15 +30,43 @@ a { color: var(--claret); }
 /* Ensure the hidden attribute always wins over component display rules. */
 [hidden] { display: none !important; }
 
-/* ---------- Header ---------- */
+/* ---------- Header / sticky topbar ---------- */
+.topbar { position: sticky; top: 0; z-index: 30; }
 .app-header {
-  position: sticky; top: 0; z-index: 20;
   display: flex; align-items: center; gap: 10px;
   padding: max(8px, env(safe-area-inset-top)) 16px 8px;
   background: var(--claret);
   color: #fff;
   min-height: var(--header-h);
 }
+
+/* Global protein bar (always visible, every screen) */
+.pbar { background: #fff; border-bottom: 1px solid var(--line); padding: 9px 16px; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+.pbar__summary { display: flex; align-items: center; gap: 10px; width: 100%; background: none; border: none; font: inherit; cursor: pointer; padding: 0; }
+.pbar__icon { font-size: 16px; flex: none; }
+.pbar__label { font-weight: 700; font-size: 14px; white-space: nowrap; flex: none; }
+.pbar__label b { font-family: var(--font-display); font-weight: 400; color: var(--claret); margin-left: 3px; font-size: 16px; }
+.pbar.is-hit .pbar__label b { color: var(--good); }
+.pbar__track { flex: 1; height: 8px; border-radius: 6px; background: var(--line); overflow: hidden; }
+.pbar__fill { display: block; height: 100%; background: var(--amber); transition: width .4s ease; }
+.pbar__fill.is-hit { background: var(--good); }
+.pbar__add { width: 28px; height: 28px; border-radius: 50%; background: var(--amber); color: #3a2400; display: grid; place-items: center; font-weight: 800; font-size: 17px; flex: none; }
+.pbar.is-hit .pbar__add { background: var(--good); color: #fff; }
+.pbar__panel { padding-top: 12px; }
+/* light-background chip + log styling inside the bar */
+.pbar .pchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pbar .pchip { background: #f1eef3; border: 1px solid var(--line); color: var(--ink); }
+.pbar .pchip b { color: var(--claret); }
+.pbar .pchip--alt { background: var(--amber); color: #3a2400; border-color: transparent; }
+.pbar .pcustom { display: flex; gap: 8px; margin-top: 10px; }
+.pbar .pcustom .field { margin-top: 0; }
+.pbar .pcustom .btn { width: auto; }
+.pbar .plog { list-style: none; margin: 12px 0 0; padding: 10px 0 0; border-top: 1px solid var(--line); }
+.pbar .plog li { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px; }
+.pbar .plog__g { color: var(--claret); font-weight: 700; white-space: nowrap; }
+.pbar .plog__x { background: none; border: none; color: var(--muted); font-size: 19px; margin-left: 10px; cursor: pointer; }
+.pbar .protein__empty { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
+.sess-actions { display: flex; gap: 12px; }
 .app-header .crest { border-radius: 6px; background: #fff3; flex: none; }
 .app-header__kicker { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--amber); display: block; }
 .app-header__title { font-size: 18px; margin: 0; font-weight: 700; }
