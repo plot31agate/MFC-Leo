@@ -42,21 +42,18 @@ a { color: var(--claret); }
 
 @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.025); } 100% { transform: scale(1); } }
 
-/* Protein "fuel" strip built into the Today hero */
-.hero--fuel { padding: 0; }
-.hero--fuel .hero__pad { padding: 20px; position: relative; }
+/* Protein "fuel" pill inside the Today hero */
 .fuel {
   position: relative; overflow: hidden; display: block; width: 100%; border: none; cursor: pointer;
-  background: #a86f06; color: #2a1c00; padding: 12px 18px; text-align: left;
-  border-top: 1.5px solid rgba(255,255,255,.22);
+  background: #f7ce63; color: #3a2400; padding: 12px 16px; text-align: left;
+  border-radius: 12px; margin-top: 16px;
 }
 .fuel__fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--amber); transition: width .55s cubic-bezier(.22,1,.36,1); z-index: 0; }
 .fuel.is-hit .fuel__fill { background: linear-gradient(90deg, var(--amber), #ffd152); }
 .fuel.is-hit { animation: pop .5s ease; }
 .fuel__row { position: relative; z-index: 1; display: flex; align-items: center; gap: 9px; }
-.fuel__icon { font-size: 15px; flex: none; }
 .fuel__label { font-weight: 800; font-size: 13px; letter-spacing: .04em; white-space: nowrap; }
-.fuel__label b { font-family: var(--font-display); font-weight: 400; font-size: 18px; letter-spacing: 0; margin-left: 4px; }
+.fuel__label b { font-family: var(--font-display); font-weight: 400; font-size: 18px; letter-spacing: 0; margin-left: 5px; }
 .fuel__streak { font-weight: 800; font-size: 13px; white-space: nowrap; }
 .fuel__cta { margin-left: auto; font-weight: 800; font-size: 12px; letter-spacing: .05em; white-space: nowrap; }
 

@@ -97,21 +97,19 @@ function heroHTML(kicker, title, blurb, day, plan, progress, fuel) {
   const info = day ? typeInfo(plan, day.type) : null;
   const pct = progress && progress.total ? Math.round((progress.done / progress.total) * 100) : 0;
   return `
-    <section class="hero hero--fuel">
-      <div class="hero__pad">
-        <p class="hero__kicker">${esc(kicker)}</p>
-        <h1 class="hero__title">${esc(title)}</h1>
-        <div class="hero__chips">
-          ${info ? `<span class="chip chip--type">${esc(info.label)}</span>` : ''}
-          ${day && day.rpe ? `<span class="chip chip--rpe" style="background:${rpeColour(plan, day.rpe)}">RPE ${esc(day.rpe)}</span>` : ''}
-        </div>
-        ${blurb ? `<p class="hero__blurb">${esc(blurb)}</p>` : ''}
-        ${progress ? `
-          <div class="hero__progress">
-            <div class="hero__pbar"><span id="hero-pbar" style="width:${pct}%"></span></div>
-            <span class="hero__pcount" id="hero-pcount">${progress.done}/${progress.total}</span>
-          </div>` : ''}
+    <section class="hero">
+      <p class="hero__kicker">${esc(kicker)}</p>
+      <h1 class="hero__title">${esc(title)}</h1>
+      <div class="hero__chips">
+        ${info ? `<span class="chip chip--type">${esc(info.label)}</span>` : ''}
+        ${day && day.rpe ? `<span class="chip chip--rpe" style="background:${rpeColour(plan, day.rpe)}">RPE ${esc(day.rpe)}</span>` : ''}
       </div>
+      ${blurb ? `<p class="hero__blurb">${esc(blurb)}</p>` : ''}
+      ${progress ? `
+        <div class="hero__progress">
+          <div class="hero__pbar"><span id="hero-pbar" style="width:${pct}%"></span></div>
+          <span class="hero__pcount" id="hero-pcount">${progress.done}/${progress.total}</span>
+        </div>` : ''}
       ${fuelBarHTML(fuel)}
     </section>`;
 }
@@ -128,7 +126,6 @@ function fuelBarHTML(f) {
     <button class="fuel ${f.hit ? 'is-hit' : ''}" id="fuel-toggle" type="button" aria-expanded="false">
       <span class="fuel__fill" style="width:${f.pct}%"></span>
       <span class="fuel__row">
-        <span class="fuel__icon">🥤</span>
         <span class="fuel__label">PROTEIN <b>${f.total}/${f.target}g</b></span>
         <span class="fuel__streak" ${f.streak > 1 ? '' : 'hidden'}>🔥 ${f.streak}</span>
         <span class="fuel__cta">${f.hit ? 'HIT! 🔥' : 'LOG ▾'}</span>
