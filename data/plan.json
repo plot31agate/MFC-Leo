@@ -40,14 +40,14 @@
       "title": "Pre-Activations",
       "subtitle": "Done at the start, pre warm-up, for all running sessions.",
       "exercises": [
-        { "name": "Adductor Squeeze (short lever → long lever)", "setsReps": "2 x 20s", "videos": ["https://youtube.com/shorts/Wt8y_Gagay0", "https://youtu.be/fq4XEMzWbjE"] },
-        { "name": "DL Hamstring ISO", "setsReps": "2 x 5 reps + 10s hold", "videos": ["https://youtu.be/BxNhP8d6vdk"] },
-        { "name": "Standing Sprinter CR (bent → straight knee, floating heel)", "setsReps": "2 x 5 reps + 10s hold", "videos": ["https://youtube.com/shorts/im3Y9BvjWj8"] },
-        { "name": "DL Wall Sits", "setsReps": "2 x 30s", "videos": ["https://youtube.com/shorts/UZp11A98yyU"] },
-        { "name": "Banded Walks (lateral)", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/3sain1vEIN8"] },
-        { "name": "Hip Flexion (band around toes)", "setsReps": "2 x 5 reps + 10s hold", "videos": ["https://youtube.com/shorts/e0tQu_XA7d4"] },
-        { "name": "Banded Hip Abduction (standing clamshell)", "setsReps": "2 x 5 reps + 10s hold", "videos": ["https://youtube.com/shorts/wo_p9rOP94w"] },
-        { "name": "Hip CARs (standing)", "setsReps": "2 x 4 each side", "videos": ["https://www.youtube.com/watch?v=B7cp3fTCvv8"] }
+        { "name": "Adductor Squeeze (short lever → long lever)", "setsReps": "2 x 20s", "cue": "Lie on your back and squeeze a ball or fist between the knees. Short lever = feet close to your hips; long lever = legs straight. Build to a hard squeeze and hold, breathing steadily.", "videos": ["https://youtube.com/shorts/Wt8y_Gagay0", "https://youtu.be/fq4XEMzWbjE"] },
+        { "name": "DL Hamstring ISO", "setsReps": "2 x 5 reps + 10s hold", "cue": "Lie on your back, knees bent, heels dug into the floor. Lift your hips into a bridge and hold — you should feel the hamstrings switch on. Lower with control between reps.", "videos": ["https://youtu.be/BxNhP8d6vdk"] },
+        { "name": "Standing Sprinter CR (bent → straight knee, floating heel)", "setsReps": "2 x 5 reps + 10s hold", "cue": "Stand tall in a sprint posture. Drive one knee up high, then slowly straighten that knee out in front with the heel floating just off the floor. Controlled — it builds hamstring and hip control.", "videos": ["https://youtube.com/shorts/im3Y9BvjWj8"] },
+        { "name": "DL Wall Sits", "setsReps": "2 x 30s", "cue": "Back flat against a wall, slide down until your thighs are near parallel to the floor, knees over ankles. Hold strong and keep breathing.", "videos": ["https://youtube.com/shorts/UZp11A98yyU"] },
+        { "name": "Banded Walks (lateral)", "setsReps": "2 x 10", "cue": "Band around your legs, athletic half-squat. Step sideways keeping constant tension on the band and your feet pointing forward — don't let the knees collapse inwards.", "videos": ["https://youtube.com/shorts/3sain1vEIN8"] },
+        { "name": "Hip Flexion (band around toes)", "setsReps": "2 x 5 reps + 10s hold", "cue": "Loop the band around your toes. Stand tall and drive the knee up against the band as high as you can, hold, then lower slowly. Stay upright — no leaning back.", "videos": ["https://youtube.com/shorts/e0tQu_XA7d4"] },
+        { "name": "Banded Hip Abduction (standing clamshell)", "setsReps": "2 x 5 reps + 10s hold", "cue": "Stand tall with a band above the knees. Keep hips level and rotate/open the working knee outwards against the band, hold, then control it back.", "videos": ["https://youtube.com/shorts/wo_p9rOP94w"] },
+        { "name": "Hip CARs (standing)", "setsReps": "2 x 4 each side", "cue": "Stand tall and braced. Draw the biggest, slowest circle you can with one knee — up, out to the side, around and down — while keeping your trunk completely still.", "videos": ["https://www.youtube.com/watch?v=B7cp3fTCvv8"] }
       ]
     },
     "mobility": {
@@ -56,14 +56,14 @@
       "title": "Mobility Routine",
       "subtitle": "Complete before gym sessions and on recovery days.",
       "exercises": [
-        { "name": "Knee Hugs", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/p31ySX4L1KA"] },
-        { "name": "Straight Leg Raise (banded preferably)", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/QTjVYkbXYrM"] },
-        { "name": "Max Hip Flexion + Knee Extension (banded preferably)", "setsReps": "2 x 10", "videos": ["https://youtu.be/6mcrxuqehhY"] },
-        { "name": "Lumbar Rotations, Straight Leg (banded preferably)", "setsReps": "2 x 10", "videos": ["https://www.youtube.com/watch?v=083PIcwFF2Q"] },
-        { "name": "Lying Pigeon Stretch", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/pjmR5Kacu1w"] },
-        { "name": "Hip 90/90s", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/HNjb9_z6co0"] },
-        { "name": "Half-Kneeling Flexor – Hamstring Stretch", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/gRwtTynOBcQ"] },
-        { "name": "Hip CARs", "setsReps": "2 x 4 each side", "videos": ["https://youtube.com/shorts/-G_6bvAIBjw"] }
+        { "name": "Knee Hugs", "setsReps": "2 x 10", "cue": "Standing or walking tall, pull one knee up into your chest and squeeze, balancing on the other leg. Hold briefly, lower, and swap. Keeps the glutes and hip flexors moving.", "videos": ["https://youtube.com/shorts/p31ySX4L1KA"] },
+        { "name": "Straight Leg Raise (banded preferably)", "setsReps": "2 x 10", "cue": "Lie on your back with the leg straight and toes pulled up. Raise it as high as you can with control, then lower slowly. The band adds resistance — keep the knee locked out.", "videos": ["https://youtube.com/shorts/QTjVYkbXYrM"] },
+        { "name": "Max Hip Flexion + Knee Extension (banded preferably)", "setsReps": "2 x 10", "cue": "Drive the knee up high towards your chest, then straighten that knee out in front to feel the hamstring lengthen. Active and controlled — don't bounce.", "videos": ["https://youtu.be/6mcrxuqehhY"] },
+        { "name": "Lumbar Rotations, Straight Leg (banded preferably)", "setsReps": "2 x 10", "cue": "On your back, take one straight leg across your body and let the lower back rotate, keeping both shoulders pinned to the floor. Feel the stretch, then return with control.", "videos": ["https://www.youtube.com/watch?v=083PIcwFF2Q"] },
+        { "name": "Lying Pigeon Stretch", "setsReps": "2 x 10", "cue": "On your back, cross one ankle over the opposite knee to make a figure-4, then draw both legs in towards your chest. You'll feel it in the glute/hip of the crossed leg.", "videos": ["https://youtube.com/shorts/pjmR5Kacu1w"] },
+        { "name": "Hip 90/90s", "setsReps": "2 x 10", "cue": "Sit with one leg bent 90° in front and the other bent 90° to the side. Keeping your chest tall, rotate the hips to switch both legs to the other side.", "videos": ["https://youtube.com/shorts/HNjb9_z6co0"] },
+        { "name": "Half-Kneeling Flexor – Hamstring Stretch", "setsReps": "2 x 10", "cue": "From a half-kneeling lunge, shift your hips forward to stretch the back-leg hip flexor, then rock back over a straightened front leg to stretch that hamstring. Flow between the two.", "videos": ["https://youtube.com/shorts/gRwtTynOBcQ"] },
+        { "name": "Hip CARs", "setsReps": "2 x 4 each side", "cue": "On all fours (or standing), draw the biggest slow circle you can with one knee — flex it up, take it out to the side, around the back and down — keeping the rest of your body still.", "videos": ["https://youtube.com/shorts/-G_6bvAIBjw"] }
       ]
     },
     "nutrition": {
@@ -100,6 +100,7 @@
       "run1a": {
         "id": "runs.run1a",
         "kind": "run",
+        "diagram": "run1a",
         "title": "Pitch/Run 1a — Straight-Line Sprints",
         "summary": "All 100% efforts, min 1 min rest after each sprint.",
         "detail": "Warm up (10-15 mins). Straight-line sprint work, all 100% efforts, minimum 1 min rest after each sprint:\n• 2 x 20m\n• 2 x 30m\n• 2 x 40m\n• 2 x 60m"
@@ -107,6 +108,7 @@
       "run1b": {
         "id": "runs.run1b",
         "kind": "run",
+        "diagram": "run1b",
         "title": "Pitch/Run 1b — Intervals",
         "summary": "Pitch perimeters @ 75% pace. 6 sets.",
         "detail": "Pitch perimeters @ 75% effort (fast but comfortable). The 30s run should be a faster pace than the 60s.\n\n1 set = 60s run, 45s off, 30s run, 30s off, 60s run — then REST.\nRepeat for 6 sets.\n\nCan be done on a treadmill / track / street run."
@@ -114,6 +116,7 @@
       "run2": {
         "id": "runs.run2",
         "kind": "run",
+        "diagram": "run2",
         "title": "Pitch/Run 2 — Penalty-Box Run",
         "summary": "6-yard, pen spot & full width. Fast pace. (Can be done with a ball.)",
         "detail": "Penalty width box run (can be done with a ball). 1 rep = 6-yard back to line → pen spot back to line → full width. 30s rest between sets. Each rep at fast pace.",
@@ -122,6 +125,7 @@
       "run3a": {
         "id": "runs.run3a",
         "kind": "run",
+        "diagram": "run3a",
         "title": "Pitch/Run 3a — Slalom + Curved Sprints",
         "summary": "All 100% efforts.",
         "detail": "Warm up (10-15 mins). All 100% efforts.\n• Slalom sprint work: x8 reps, 1 min rest after each effort.\n• REST 4-5 mins.\n• Curved sprint work (around 1/2 the centre circle): x4 reps each side (8 in total)."
@@ -129,6 +133,7 @@
       "run3b": {
         "id": "runs.run3b",
         "kind": "run",
+        "diagram": "run3b",
         "title": "Pitch/Run 3b — Saltire Run",
         "summary": "Diagonal runs @ 80% pace, light jog recovery.",
         "detail": "Saltire run. 1 rep = diagonal run + recovery + diagonal run + recovery. Run @ 80% pace, light jog as the rest.",
@@ -137,6 +142,7 @@
       "run4": {
         "id": "runs.run4",
         "kind": "run",
+        "diagram": "run4",
         "title": "Pitch/Run 4 — Every Line and Back",
         "summary": "For time. Continuous sets.",
         "detail": "'Every Line and Back' — for time.\n5 sets x 3 mins continuous OR 4 sets x 4 mins continuous.\n2-3 mins rest between sets."

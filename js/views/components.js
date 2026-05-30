@@ -1,6 +1,7 @@
 // Renders a single library node (warm-up, exercise list, run, gym, nutrition, subs)
 // to HTML. Shared by the Today view and the Plan day-detail view.
 import { esc } from '../util.js';
+import { pitchDiagram } from './diagrams.js';
 
 function videoLinks(videos) {
   if (!videos || !videos.length) return '';
@@ -26,7 +27,11 @@ function renderBody(node, ctx = {}) {
         <ul class="ex-list">
           ${node.exercises.map((e) => `
             <li>
-              <div><div class="ex-name">${esc(e.name)}</div>${videoLinks(e.videos)}</div>
+              <div>
+                <div class="ex-name">${esc(e.name)}</div>
+                ${e.cue ? `<div class="ex-sub">${esc(e.cue)}</div>` : ''}
+                ${videoLinks(e.videos)}
+              </div>
               <div class="ex-meta">${esc(e.setsReps)}</div>
             </li>`).join('')}
         </ul>`;
@@ -35,7 +40,8 @@ function renderBody(node, ctx = {}) {
       const wk = ctx.week;
       const wkLine = (node.byWeek && wk && node.byWeek[wk])
         ? `<p class="ex-name" style="color:var(--claret)">This week: ${esc(node.byWeek[wk])}</p>` : '';
-      return `${wkLine}<p class="detail-text">${esc(node.detail || node.summary || '')}</p>`;
+      const diagram = node.diagram ? pitchDiagram(node.diagram) : '';
+      return `${wkLine}<p class="detail-text">${esc(node.detail || node.summary || '')}</p>${diagram}`;
     }
 
     case 'gym':

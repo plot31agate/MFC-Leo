@@ -95,6 +95,7 @@ a { color: var(--claret); }
 .ex-sub { color: var(--muted); font-size: 13px; }
 .video-link { font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; }
 .detail-text { white-space: pre-line; margin: 6px 0 0; }
+.pitch { display: block; width: 100%; max-width: 360px; height: auto; margin: 12px auto 2px; border-radius: 10px; box-shadow: var(--shadow); }
 .footnote { color: var(--muted); font-size: 13px; margin-top: 10px; font-style: italic; }
 
 /* ---------- Buttons ---------- */
