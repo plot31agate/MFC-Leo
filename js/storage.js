@@ -1,7 +1,7 @@
 // Local-only persistence: completion, notes, metrics and settings.
 // Everything lives in localStorage on Leo's phone. No server, no accounts.
 import { trainingDays } from './plan.js';
-import { todayISO, daysBetween } from './util.js';
+import { todayISO, daysBetween, isoDate } from './util.js';
 
 const PROGRESS_KEY = 'mfc.progress.v1';
 const SETTINGS_KEY = 'mfc.settings.v1';
@@ -51,6 +51,23 @@ export function removeProtein(dateIso, index) {
   const log = getProteinLog(dateIso).slice();
   log.splice(index, 1);
   return setDayField(dateIso, 'protein', log);
+}
+// Consecutive days (up to today) hitting the protein target. Today still counts
+// as "in progress" — it won't break the streak until the day is over.
+export function proteinStreak(target) {
+  if (!target) return 0;
+  const prog = getProgress();
+  const base = new Date();
+  let streak = 0;
+  for (let i = 0; i < 400; i++) {
+    const dt = new Date(base);
+    dt.setDate(dt.getDate() - i);
+    const total = (prog[isoDate(dt)]?.protein || []).reduce((s, e) => s + (Number(e.g) || 0), 0);
+    if (total >= target) streak++;
+    else if (i === 0) continue; // today not hit yet — don't break the streak
+    else break;
+  }
+  return streak;
 }
 
 // ---- Per-task completion (keyed by component ref within a day) ----

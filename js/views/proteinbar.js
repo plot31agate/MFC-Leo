@@ -1,8 +1,8 @@
-// Global sticky protein bar — lives in the app shell and is visible on every
-// screen, so logging protein towards the daily target is always one tap away.
-import { getProteinLog, proteinTotal, addProtein, removeProtein } from '../storage.js';
+// Global sticky protein "fuel gauge" pill — pinned under the header on every
+// screen so logging towards the daily target is always one tap away. The pill
+// fills as you log, shows a streak flame, and celebrates when the target's hit.
+import { getProteinLog, proteinTotal, addProtein, removeProtein, proteinStreak } from '../storage.js';
 import { todayISO, esc } from '../util.js';
-import { paintNudges } from './nudges.js';
 
 let _plan = null;
 
@@ -31,31 +31,26 @@ function render() {
   const total = proteinTotal(iso);
   const pct = Math.round(Math.min(total / target, 1) * 100);
   const hit = total >= target;
+  const streak = proteinStreak(target);
 
-  const existing = el.querySelector('.pbar__panel');
-  const open = existing ? !existing.hasAttribute('hidden') : false;
+  const existing = el.querySelector('.ppill-wrap');
+  const open = existing ? existing.hasAttribute('open') : false;
 
-  el.className = 'pbar' + (hit ? ' is-hit' : '');
   el.innerHTML = `
-    <button class="pbar__summary" id="pbar-toggle" type="button" aria-expanded="${open}">
-      <span class="pbar__icon">🥤</span>
-      <span class="pbar__label">Protein <b>${total}/${target}g</b></span>
-      <span class="pbar__track"><span class="pbar__fill ${hit ? 'is-hit' : ''}" style="width:${pct}%"></span></span>
-      <span class="pbar__add">${hit ? '✓' : '＋'}</span>
-    </button>
-    <div class="pbar__panel" ${open ? '' : 'hidden'}>${bodyHTML(iso)}</div>`;
+    <details class="ppill-wrap" ${open ? 'open' : ''}>
+      <summary class="ppill ${hit ? 'is-hit' : ''}">
+        <span class="ppill__fill" style="width:${pct}%"></span>
+        <span class="ppill__row">
+          <span class="ppill__icon">🥤</span>
+          <span class="ppill__label">Protein <b>${total}/${target}g</b></span>
+          ${streak > 1 ? `<span class="ppill__streak">🔥 ${streak}</span>` : ''}
+          <span class="ppill__cta">${hit ? 'Hit! 🔥' : '＋ Log'}</span>
+        </span>
+      </summary>
+      <div class="ppill__panel">${bodyHTML(iso)}</div>
+    </details>`;
 
-  const refresh = () => {
-    render();
-    const n = document.getElementById('nudges');
-    if (n) paintNudges(n, { plan: _plan }, iso);
-  };
-
-  el.querySelector('#pbar-toggle').addEventListener('click', () => {
-    const p = el.querySelector('.pbar__panel');
-    p.hidden = !p.hidden;
-    el.querySelector('#pbar-toggle').setAttribute('aria-expanded', String(!p.hidden));
-  });
+  const refresh = () => render();
   el.querySelectorAll('[data-add]').forEach((b) => b.addEventListener('click', () => { addProtein(iso, b.dataset.label, Number(b.dataset.add)); refresh(); }));
   el.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => { removeProtein(iso, Number(b.dataset.rm)); refresh(); }));
   const customBtn = el.querySelector('[data-custom]');

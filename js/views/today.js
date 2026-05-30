@@ -1,10 +1,9 @@
 // The home screen: a guided, tickable session checklist (protein now lives in
-// the global sticky bar in the app shell). Plus smart nudges and logging.
+// the global sticky bar in the app shell). Plus logging.
 import { resolveToday, resolveRef, typeInfo, rpeColour } from '../plan.js';
 import { getDay, setDayDone, setDayField, getTasks, setTask, taskCount } from '../storage.js';
 import { todayISO, prettyDate, parseISO, daysBetween, DOW_LONG, MONTHS } from '../util.js';
 import { componentCard, componentHTML } from './components.js';
-import { paintNudges } from './nudges.js';
 import { esc } from '../util.js';
 
 export function renderToday(container, ctx) {
@@ -33,7 +32,6 @@ export function renderToday(container, ctx) {
     const nut = resolveRef(plan, 'nutrition');
 
     container.innerHTML = `
-      <div id="nudges"></div>
       ${heroHTML(kicker, exact.title || info.label, info.blurb, exact, plan, { done: tc.done, total: tc.total })}
       <div class="done-banner" id="done-banner" ${tc.all ? '' : 'hidden'}>✓ Completed — great work, Leo!</div>
 
@@ -62,7 +60,6 @@ export function renderToday(container, ctx) {
       <a class="btn btn--strava" href="${esc(plan.stravaTeamUrl || 'https://www.strava.com')}" target="_blank" rel="noopener">Log runs &amp; gym on Strava ↗</a>
     `;
 
-    paintNudges(container.querySelector('#nudges'), ctx, iso);
     bindLog(container, exact.date);
     bindTasks(container, ctx, iso, exact.components);
     return;
@@ -77,15 +74,13 @@ export function renderToday(container, ctx) {
   else { title = exact && exact.type === 'off' ? 'Day Off' : 'Recovery'; blurb = (exact ? typeInfo(plan, exact.type).blurb : '') || 'Rest day — take it. Recovery is part of the plan.'; }
 
   container.innerHTML = `
-    <div id="nudges"></div>
     ${heroHTML(kicker, title, blurb, null, plan, null)}
     <section class="card center">
       <div class="big-emoji">${emoji}</div>
-      <p class="muted">Recovery matters most on rest days — sleep well, eat well, and still hit your <b>${plan.proteinTargetG || 140}g protein</b> (log it in the bar above).</p>
+      <p class="muted">Recovery matters most on rest days — sleep well, eat well, and still hit your <b>${plan.proteinTargetG || 140}g protein</b> (log it in the pill above).</p>
     </section>
     <button class="btn btn--primary btn--big" id="go-plan">See the full plan</button>
   `;
-  paintNudges(container.querySelector('#nudges'), ctx, iso);
   container.querySelector('#go-plan').addEventListener('click', () => { location.hash = '#/plan'; });
 }
 
@@ -132,10 +127,12 @@ function bindTasks(container, ctx, iso, refs) {
     if (count) count.textContent = `${tc.done}/${tc.total}`;
     setDayDone(iso, tc.all);
     const banner = container.querySelector('#done-banner');
-    if (banner) banner.hidden = !tc.all;
+    if (banner) {
+      banner.hidden = !tc.all;
+      banner.classList.toggle('celebrate', tc.all);
+    }
     const markAll = container.querySelector('#mark-all');
     if (markAll) markAll.textContent = tc.all ? 'Reset' : 'Mark all';
-    paintNudges(container.querySelector('#nudges'), ctx, iso);
   };
 
   container.querySelectorAll('[data-check]').forEach((btn) => {
