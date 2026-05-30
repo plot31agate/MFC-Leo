@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Leo · Motherwell Training</title>
+  <meta name="description" content="Leo's Motherwell FC pre-season training tracker." />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#6C1D45" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+
+  <!-- iOS standalone -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Leo · MFC" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <img src="icons/icon.svg" alt="" class="crest" width="32" height="32" />
+    <div class="app-header__titles">
+      <span class="app-header__kicker">Motherwell FC · U19s</span>
+      <h1 class="app-header__title" id="header-title">Leo's Training</h1>
+    </div>
+  </header>
+
+  <main id="app" class="app-main"><!-- views render here --></main>
+
+  <nav class="tabbar" aria-label="Main navigation">
+    <a href="#/today"    class="tabbar__item" data-tab="today">    <span class="tabbar__icon">📅</span><span>Today</span></a>
+    <a href="#/plan"     class="tabbar__item" data-tab="plan">     <span class="tabbar__icon">🗓️</span><span>Plan</span></a>
+    <a href="#/progress" class="tabbar__item" data-tab="progress"> <span class="tabbar__icon">📈</span><span>Progress</span></a>
+    <a href="#/reference" class="tabbar__item" data-tab="reference"><span class="tabbar__icon">📖</span><span>Guide</span></a>
+  </nav>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

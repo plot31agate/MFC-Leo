@@ -1,0 +1,281 @@
+{
+  "athlete": "Leo",
+  "club": "Motherwell FC",
+  "ageGroup": "U19s / 2010s",
+  "season": "2026-27 Off-Season Programme",
+  "preSeasonReturn": "2026-06-18",
+  "stravaTeamUrl": "https://www.strava.com/",
+  "officialPdfs": [],
+  "dayTypes": {
+    "off":       { "label": "Day Off", "colour": "#9aa0a6", "blurb": "Rest day. Take it. Recovery is part of the plan." },
+    "recovery":  { "label": "Recovery", "colour": "#2e9e5b", "blurb": "Light mobility work to keep you moving and aid recovery." },
+    "uppers":    { "label": "Uppers", "colour": "#39c0d6", "blurb": "Upper body + core. Push the exercises to make progress." },
+    "single":    { "label": "Single Session", "colour": "#f4c20d", "blurb": "One quality session — carry it out well." },
+    "double":    { "label": "Double Session", "colour": "#e8830c", "blurb": "The toughest days. High effort, then recover well." },
+    "preseason": { "label": "Pre-Season", "colour": "#6C1D45", "blurb": "Players return for pre-season training." }
+  },
+  "rpeScale": [
+    { "range": "1",   "label": "Very Light Activity", "note": "Anything other than complete rest", "colour": "#9ed0ff" },
+    { "range": "2-3", "label": "Light Activity", "note": "Can maintain for hours, easy to breathe and hold a conversation", "colour": "#5fe3c0" },
+    { "range": "4-5", "label": "Moderate Activity", "note": "Can exercise for long periods, able to talk in short conversations", "colour": "#36c95f" },
+    { "range": "6-7", "label": "Vigorous Activity", "note": "On the verge of uncomfortable, short of breath, can speak a sentence", "colour": "#f4c20d" },
+    { "range": "8-9", "label": "Very Hard Activity", "note": "Hard to maintain intensity, hard to speak more than a word", "colour": "#e8830c" },
+    { "range": "10",  "label": "Max Effort", "note": "Feels impossible to continue, completely out of breath", "colour": "#e2342b" }
+  ],
+  "library": {
+    "warmup": {
+      "id": "warmup",
+      "kind": "routine",
+      "title": "Warm-Up Prep",
+      "subtitle": "Do NOT attempt any drills/runs without a proper warm-up!",
+      "steps": [
+        { "name": "1. Raise Heart Rate + Band Activation", "detail": "Light jog + stretch out any tight muscle groups, then a band routine." },
+        { "name": "2. Activate Muscle & Mobilise Joints", "detail": "Dynamically hit all key muscles: groins, hamstrings, glutes, quads, calves, hip flexors." },
+        { "name": "3. Potentiate & Prime Key Movements", "detail": "Sharp accelerations & decelerations, cutting, single-leg plyos, changes of direction, jumps. Bursts up to 80% speed. Runs for distance 40-80m @ 70%." }
+      ]
+    },
+    "preactivation": {
+      "id": "preactivation",
+      "kind": "exerciseList",
+      "title": "Pre-Activations",
+      "subtitle": "Done at the start, pre warm-up, for all running sessions.",
+      "exercises": [
+        { "name": "Adductor Squeeze (short lever → long lever)", "setsReps": "2 x 20s", "videos": ["https://youtube.com/shorts/Wt8y_Gagay0", "https://youtu.be/fq4XEMzWbjE"] },
+        { "name": "DL Hamstring ISO", "setsReps": "2 x 5 reps + 10s hold", "videos": ["https://youtu.be/BxNhP8d6vdk"] },
+        { "name": "Standing Sprinter CR (bent → straight knee, floating heel)", "setsReps": "2 x 5 reps + 10s hold", "videos": ["https://youtube.com/shorts/im3Y9BvjWj8"] },
+        { "name": "DL Wall Sits", "setsReps": "2 x 30s", "videos": ["https://youtube.com/shorts/UZp11A98yyU"] },
+        { "name": "Banded Walks (lateral)", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/3sain1vEIN8"] },
+        { "name": "Hip Flexion (band around toes)", "setsReps": "2 x 5 reps + 10s hold", "videos": ["https://youtube.com/shorts/e0tQu_XA7d4"] },
+        { "name": "Banded Hip Abduction (standing clamshell)", "setsReps": "2 x 5 reps + 10s hold", "videos": ["https://youtube.com/shorts/wo_p9rOP94w"] },
+        { "name": "Hip CARs (standing)", "setsReps": "2 x 4 each side", "videos": ["https://www.youtube.com/watch?v=B7cp3fTCvv8"] }
+      ]
+    },
+    "mobility": {
+      "id": "mobility",
+      "kind": "exerciseList",
+      "title": "Mobility Routine",
+      "subtitle": "Complete before gym sessions and on recovery days.",
+      "exercises": [
+        { "name": "Knee Hugs", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/p31ySX4L1KA"] },
+        { "name": "Straight Leg Raise (banded preferably)", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/QTjVYkbXYrM"] },
+        { "name": "Max Hip Flexion + Knee Extension (banded preferably)", "setsReps": "2 x 10", "videos": ["https://youtu.be/6mcrxuqehhY"] },
+        { "name": "Lumbar Rotations, Straight Leg (banded preferably)", "setsReps": "2 x 10", "videos": ["https://www.youtube.com/watch?v=083PIcwFF2Q"] },
+        { "name": "Lying Pigeon Stretch", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/pjmR5Kacu1w"] },
+        { "name": "Hip 90/90s", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/HNjb9_z6co0"] },
+        { "name": "Half-Kneeling Flexor – Hamstring Stretch", "setsReps": "2 x 10", "videos": ["https://youtube.com/shorts/gRwtTynOBcQ"] },
+        { "name": "Hip CARs", "setsReps": "2 x 4 each side", "videos": ["https://youtube.com/shorts/-G_6bvAIBjw"] }
+      ]
+    },
+    "nutrition": {
+      "id": "nutrition",
+      "kind": "nutrition",
+      "title": "Session Fuelling",
+      "before": { "goal": "High Carbs", "examples": "Banana on toast • Rice Krispie Squares" },
+      "during": { "goal": "Fast Carbs + Hydrate", "examples": "Banana or Haribo • Lucozade and/or water" },
+      "after":  { "goal": "Carbs + Protein + Hydrate", "examples": "Protein shake • Chicken wrap" }
+    },
+    "substitutes": {
+      "id": "substitutes",
+      "kind": "substitutes",
+      "title": "Exercise Substitutes",
+      "subtitle": "ONLY as a last resort when an exercise can't be done due to lack of equipment.",
+      "items": [
+        { "exercise": "Bulgarian Split Squat", "alt": "Lunges" },
+        { "exercise": "Hamstring Curl Machine", "alt": "Elevated SL Hamstring 3 x 5 reps" },
+        { "exercise": "Nordics", "alt": "Elevated DL Hamstring Hold on Box 3 x 15s" },
+        { "exercise": "Bench Press", "alt": "Slow Tempo Press Ups (2s on the way down)" },
+        { "exercise": "Pull Ups", "alt": "Heavy DB Row OR Lat Pulldown" },
+        { "exercise": "Barbell Back Squat", "alt": "Leg Press Machine OR DB Goblet Squat" }
+      ]
+    },
+    "runs": {
+      "benchmark5k": {
+        "id": "runs.benchmark5k",
+        "kind": "run",
+        "title": "Benchmark 5km Time Trial",
+        "summary": "Timed 5km as fast as possible, no stops.",
+        "detail": "Warm up (10-15 mins). Then a timed Strava 5km as fast as possible — no stops. Pace yourself!",
+        "logMetric": { "key": "fiveK", "label": "5km time", "type": "time", "pb": "low" }
+      },
+      "run1a": {
+        "id": "runs.run1a",
+        "kind": "run",
+        "title": "Pitch/Run 1a — Straight-Line Sprints",
+        "summary": "All 100% efforts, min 1 min rest after each sprint.",
+        "detail": "Warm up (10-15 mins). Straight-line sprint work, all 100% efforts, minimum 1 min rest after each sprint:\n• 2 x 20m\n• 2 x 30m\n• 2 x 40m\n• 2 x 60m"
+      },
+      "run1b": {
+        "id": "runs.run1b",
+        "kind": "run",
+        "title": "Pitch/Run 1b — Intervals",
+        "summary": "Pitch perimeters @ 75% pace. 6 sets.",
+        "detail": "Pitch perimeters @ 75% effort (fast but comfortable). The 30s run should be a faster pace than the 60s.\n\n1 set = 60s run, 45s off, 30s run, 30s off, 60s run — then REST.\nRepeat for 6 sets.\n\nCan be done on a treadmill / track / street run."
+      },
+      "run2": {
+        "id": "runs.run2",
+        "kind": "run",
+        "title": "Pitch/Run 2 — Penalty-Box Run",
+        "summary": "6-yard, pen spot & full width. Fast pace. (Can be done with a ball.)",
+        "detail": "Penalty width box run (can be done with a ball). 1 rep = 6-yard back to line → pen spot back to line → full width. 30s rest between sets. Each rep at fast pace.",
+        "byWeek": { "2": "4 sets x 4 reps", "3": "5 sets x 4 reps", "4": "6 sets x 3 reps" }
+      },
+      "run3a": {
+        "id": "runs.run3a",
+        "kind": "run",
+        "title": "Pitch/Run 3a — Slalom + Curved Sprints",
+        "summary": "All 100% efforts.",
+        "detail": "Warm up (10-15 mins). All 100% efforts.\n• Slalom sprint work: x8 reps, 1 min rest after each effort.\n• REST 4-5 mins.\n• Curved sprint work (around 1/2 the centre circle): x4 reps each side (8 in total)."
+      },
+      "run3b": {
+        "id": "runs.run3b",
+        "kind": "run",
+        "title": "Pitch/Run 3b — Saltire Run",
+        "summary": "Diagonal runs @ 80% pace, light jog recovery.",
+        "detail": "Saltire run. 1 rep = diagonal run + recovery + diagonal run + recovery. Run @ 80% pace, light jog as the rest.",
+        "byWeek": { "2": "6 x 2 reps", "3": "8 x 2 reps", "4": "6 x 3 reps" }
+      },
+      "run4": {
+        "id": "runs.run4",
+        "kind": "run",
+        "title": "Pitch/Run 4 — Every Line and Back",
+        "summary": "For time. Continuous sets.",
+        "detail": "'Every Line and Back' — for time.\n5 sets x 3 mins continuous OR 4 sets x 4 mins continuous.\n2-3 mins rest between sets."
+      },
+      "altRun1": {
+        "id": "runs.altRun1",
+        "kind": "run",
+        "title": "Alternative Run 1 — 4 x 1km",
+        "summary": "Aiming for 3:50-4:10 / km.",
+        "detail": "4 x 1km run, aiming for 3:50-4:10 per km. 2 mins rest between each 1km. Aim for consistent timings each km."
+      },
+      "altRun2": {
+        "id": "runs.altRun2",
+        "kind": "run",
+        "title": "Alternative Run 2 — 2 x (5 x 400m)",
+        "summary": "Consistent 400m splits.",
+        "detail": "2 sets of 5 x 400m. 1 set = 5 x 400m with 60s rest between efforts, then 4 mins rest between Set 1 and Set 2. Aim for consistent timings each 400m."
+      }
+    },
+    "gym": {
+      "lowers1": {
+        "id": "gym.lowers1",
+        "kind": "gym",
+        "title": "Gym 1 — Lowers 1",
+        "footer": "Then perform 2-3 upper-body exercises of choice.",
+        "exercises": [
+          { "name": "DB Goblet Lateral Lunge", "load": "2 x 8 each side • 10-15kg", "rest": "1.5-2.0 min" },
+          { "name": "DB SL RDL", "load": "3 x 5 each side • 5-10kg", "rest": "1.5-2.0 min" },
+          { "name": "DB Bulgarian Split Squats", "load": "2 x 8 each side • 10-15kg", "rest": "1.5-2.0 min" },
+          { "name": "Heel-Raised Goblet Squats", "load": "2 x 10 • 15-25kg", "rest": "1.5-2.0 min" },
+          { "name": "Single Leg Calf Raise", "load": "3 x 15 each side • bodyweight", "rest": "1.5-2.0 min" }
+        ]
+      },
+      "lowers2": {
+        "id": "gym.lowers2",
+        "kind": "gym",
+        "title": "Gym 2 — Lowers 2",
+        "footer": "Then perform 2-3 upper-body exercises of choice.",
+        "exercises": [
+          { "name": "Barbell Back Squat", "load": "3 x 10", "rest": "2 min" },
+          { "name": "Single Leg Hamstring Curls (Machine)", "load": "3 x 6", "rest": "2 min" },
+          { "name": "Nordics", "load": "1 x 3", "rest": "2 min" },
+          { "name": "Seated Knee Extensions (Machine)", "load": "3 x 8", "rest": "2 min" },
+          { "name": "Hip Flexion with Cable", "load": "2 x 6 each side", "rest": "2 min" },
+          { "name": "Wall Sit", "load": "2 x 30s", "rest": "2 min" }
+        ]
+      },
+      "plyosUppers": {
+        "id": "gym.plyosUppers",
+        "kind": "gym",
+        "title": "Gym 3 — Plyos + Uppers",
+        "exercises": [
+          { "name": "DB Walking Lunges", "load": "2 x 8 steps • 10-15kg each hand", "rest": "1.5-2.0 min" },
+          { "name": "Box Jumps", "load": "3 x 6", "rest": "1.5-2.0 min" },
+          { "name": "SL Double Broad Jump", "load": "3 x 3 each side", "rest": "1.5-2.0 min" },
+          { "name": "DB Split CMJ (continuous)", "load": "3 x 5 each side", "rest": "1.5-2.0 min" },
+          { "name": "Rotational Med Ball Toss", "load": "3 x 4 each side • 3-6kg", "rest": "1.5-2.0 min" },
+          { "name": "Press Ups", "load": "2 x 25", "rest": "1.5-2.0 min" },
+          { "name": "DB Lateral Shoulder Raise", "load": "3 x 12", "rest": "1.5-2.0 min" },
+          { "name": "DB Bicep Curls", "load": "3 x 15", "rest": "1.5-2.0 min" },
+          { "name": "DB Push Press", "load": "3 x 6", "rest": "1.5-2.0 min" }
+        ]
+      },
+      "uppersCore": {
+        "id": "gym.uppersCore",
+        "kind": "gym",
+        "title": "Gym 4 — Uppers + Core",
+        "exercises": [
+          { "name": "DB Chest Press", "load": "3 x 8", "rest": "2 min" },
+          { "name": "Pull Ups", "load": "3 x 6-8", "rest": "2 min" },
+          { "name": "DB Alternating OH Strict Press", "load": "3 x 6-8 each side", "rest": "2 min" },
+          { "name": "Press Ups", "load": "3 x 20-25", "rest": "2 min" },
+          { "name": "SA Bent Over Row", "load": "3 x 10 each side", "rest": "2 min" },
+          { "name": "Deadbugs", "load": "2 x 8 each side", "rest": "1 min" },
+          { "name": "Side Plank", "load": "2 x 45s each side", "rest": "1 min" }
+        ]
+      }
+    }
+  },
+  "weeks": [
+    {
+      "week": 0,
+      "wc": "2026-05-18",
+      "title": "Week 0 — Full Rest",
+      "note": "FULL WEEK REST AND RECOVERY. Enjoy your break and recover physically and mentally.",
+      "days": []
+    },
+    {
+      "week": 1,
+      "wc": "2026-05-25",
+      "title": "Week 1",
+      "days": [
+        { "date": "2026-05-25", "type": "off", "rpe": "0", "components": [] },
+        { "date": "2026-05-26", "type": "off", "rpe": "0", "components": [] },
+        { "date": "2026-05-27", "type": "off", "rpe": "0", "components": [] },
+        { "date": "2026-05-28", "type": "single", "rpe": "7-8", "title": "Benchmark 5km", "components": ["warmup", "preactivation", "runs.benchmark5k"] },
+        { "date": "2026-05-29", "type": "recovery", "rpe": "1", "components": ["mobility"] },
+        { "date": "2026-05-30", "type": "double", "rpe": "7-8", "components": ["warmup", "preactivation", "runs.run1b", "mobility", "gym.lowers1"] },
+        { "date": "2026-05-31", "type": "uppers", "rpe": "2-3", "components": ["mobility", "gym.uppersCore"] }
+      ]
+    },
+    {
+      "week": 2,
+      "wc": "2026-06-01",
+      "title": "Week 2",
+      "days": [
+        { "date": "2026-06-01", "type": "single", "rpe": "5-6", "components": ["warmup", "preactivation", "runs.run2"] },
+        { "date": "2026-06-02", "type": "double", "rpe": "7-8", "components": ["warmup", "preactivation", "runs.run1a", "runs.run1b", "mobility", "gym.lowers1"] },
+        { "date": "2026-06-03", "type": "recovery", "rpe": "1", "components": ["mobility"] },
+        { "date": "2026-06-04", "type": "uppers", "rpe": "2-3", "components": ["mobility", "gym.uppersCore"] },
+        { "date": "2026-06-05", "type": "double", "rpe": "7-8", "components": ["warmup", "preactivation", "runs.run4", "mobility", "gym.plyosUppers"] },
+        { "date": "2026-06-06", "type": "single", "rpe": "5-6", "components": ["mobility", "gym.lowers2"] },
+        { "date": "2026-06-07", "type": "recovery", "rpe": "1", "components": ["mobility"] }
+      ]
+    },
+    {
+      "week": 3,
+      "wc": "2026-06-08",
+      "title": "Week 3",
+      "days": [
+        { "date": "2026-06-08", "type": "single", "rpe": "5-6", "components": ["warmup", "preactivation", "runs.run2"] },
+        { "date": "2026-06-09", "type": "double", "rpe": "7-8", "components": ["warmup", "preactivation", "runs.run1a", "runs.run1b", "mobility", "gym.lowers1"] },
+        { "date": "2026-06-10", "type": "recovery", "rpe": "1", "components": ["mobility"] },
+        { "date": "2026-06-11", "type": "uppers", "rpe": "2", "components": ["mobility", "gym.uppersCore"] },
+        { "date": "2026-06-12", "type": "double", "rpe": "7-8", "components": ["warmup", "preactivation", "runs.run4", "mobility", "gym.plyosUppers"] },
+        { "date": "2026-06-13", "type": "single", "rpe": "5-6", "components": ["mobility", "gym.lowers2"] },
+        { "date": "2026-06-14", "type": "recovery", "rpe": "1", "components": ["mobility"] }
+      ]
+    },
+    {
+      "week": 4,
+      "wc": "2026-06-15",
+      "title": "Week 4",
+      "days": [
+        { "date": "2026-06-15", "type": "double", "rpe": "7-8", "components": ["warmup", "preactivation", "runs.run3a", "runs.run3b", "mobility", "gym.plyosUppers"] },
+        { "date": "2026-06-16", "type": "uppers", "rpe": "2", "components": ["mobility", "gym.uppersCore"] },
+        { "date": "2026-06-17", "type": "recovery", "rpe": "1", "components": ["mobility"] },
+        { "date": "2026-06-18", "type": "preseason", "rpe": "", "title": "Players Return — Pre-Season", "components": [] }
+      ]
+    }
+  ]
+}
