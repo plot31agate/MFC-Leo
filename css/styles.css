@@ -27,6 +27,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 a { color: var(--claret); }
+/* Ensure the hidden attribute always wins over component display rules. */
+[hidden] { display: none !important; }
 
 /* ---------- Header ---------- */
 .app-header {
