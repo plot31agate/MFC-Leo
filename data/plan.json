@@ -69,10 +69,48 @@
     "nutrition": {
       "id": "nutrition",
       "kind": "nutrition",
-      "title": "Session Fuelling",
-      "before": { "goal": "High Carbs", "examples": "Banana on toast • Rice Krispie Squares" },
-      "during": { "goal": "Fast Carbs + Hydrate", "examples": "Banana or Haribo • Lucozade and/or water" },
-      "after":  { "goal": "Carbs + Protein + Hydrate", "examples": "Protein shake • Chicken wrap" }
+      "title": "Fuelling & Food",
+      "before": {
+        "goal": "High carbs · 1–3 hrs before",
+        "examples": [
+          "Porridge with banana & honey",
+          "Beans on toast",
+          "Bagel or toast with peanut butter",
+          "Weetabix / cereal with milk",
+          "Bowl of pasta or rice with chicken",
+          "Banana or a cereal/Rice Krispie bar (if short on time)"
+        ]
+      },
+      "during": {
+        "goal": "Fast carbs + hydrate",
+        "examples": [
+          "Banana",
+          "Small handful of Haribo / jelly sweets",
+          "Lucozade Sport or diluting juice (squash)",
+          "Water — sip throughout"
+        ]
+      },
+      "after": {
+        "goal": "Carbs + protein · within ~30–60 min",
+        "examples": [
+          "Chicken, tuna or ham wrap",
+          "Glass of milk or a protein shake",
+          "Greek yoghurt with fruit & granola",
+          "Scrambled or boiled eggs on toast",
+          "Pasta or rice with mince/chicken & veg",
+          "Cheese toastie + a glass of milk"
+        ]
+      },
+      "tips": [
+        "You're 15 and still growing — eat enough across the day. Aim for 3 meals + 2–3 snacks; don't skip meals, especially breakfast.",
+        "Build each plate: a palm of protein (chicken, fish, eggs, mince, beans), 1–2 handfuls of carbs (potatoes, pasta, rice, bread), and half a plate of veg/fruit.",
+        "Good cheap snacks: bananas, apples, oatcakes, yoghurt, milk, cheese, malt loaf, peanut butter on toast, a handful of nuts.",
+        "Hydrate: a glass of water with every meal and a bottle to sip in training. Your pee should be pale straw — dark means drink more.",
+        "Recovery in a hurry: milk + a banana, or yoghurt with fruit, then a proper meal soon after.",
+        "Go easy on energy drinks (Monster/Prime energy) — too much caffeine for a 15-year-old. Water, milk and diluting juice do the job.",
+        "On hot days train in the cooler morning and drink extra fluids."
+      ],
+      "note": "General guidance to support training and growth for a 15-year-old — not a strict diet. For anything specific, check with the club's staff."
     },
     "substitutes": {
       "id": "substitutes",
@@ -169,11 +207,11 @@
         "title": "Gym 1 — Lowers 1",
         "footer": "Then perform 2-3 upper-body exercises of choice.",
         "exercises": [
-          { "name": "DB Goblet Lateral Lunge", "load": "2 x 8 each side • 10-15kg", "rest": "1.5-2.0 min" },
-          { "name": "DB SL RDL", "load": "3 x 5 each side • 5-10kg", "rest": "1.5-2.0 min" },
-          { "name": "DB Bulgarian Split Squats", "load": "2 x 8 each side • 10-15kg", "rest": "1.5-2.0 min" },
-          { "name": "Heel-Raised Goblet Squats", "load": "2 x 10 • 15-25kg", "rest": "1.5-2.0 min" },
-          { "name": "Single Leg Calf Raise", "load": "3 x 15 each side • bodyweight", "rest": "1.5-2.0 min" }
+          { "name": "DB Goblet Lateral Lunge", "load": "2 x 8 each side • 10-15kg", "rest": "1.5-2.0 min", "cue": "Hold a dumbbell at your chest. Step wide to one side and sit into that hip, keeping the other leg straight, then push back to the middle. Chest up." },
+          { "name": "DB SL RDL", "load": "3 x 5 each side • 5-10kg", "rest": "1.5-2.0 min", "cue": "Single-leg Romanian deadlift. Hinge at the hip and lower the dumbbell down the standing leg, free leg reaching behind; feel the hamstring, then stand tall. Keep a flat back." },
+          { "name": "DB Bulgarian Split Squats", "load": "2 x 8 each side • 10-15kg", "rest": "1.5-2.0 min", "cue": "Rear foot up on a bench, dumbbells by your sides. Drop straight down into the front leg with the knee over your toes, then drive back up." },
+          { "name": "Heel-Raised Goblet Squats", "load": "2 x 10 • 15-25kg", "rest": "1.5-2.0 min", "cue": "Heels on a small plate or wedge, dumbbell at your chest. Squat down tall and deep with knees travelling forward, then stand." },
+          { "name": "Single Leg Calf Raise", "load": "3 x 15 each side • bodyweight", "rest": "1.5-2.0 min", "cue": "On one foot (hold something for balance), rise up onto the ball of your foot as high as you can, pause at the top, then lower slowly." }
         ]
       },
       "lowers2": {
@@ -182,12 +220,12 @@
         "title": "Gym 2 — Lowers 2",
         "footer": "Then perform 2-3 upper-body exercises of choice.",
         "exercises": [
-          { "name": "Barbell Back Squat", "load": "3 x 10", "rest": "2 min" },
-          { "name": "Single Leg Hamstring Curls (Machine)", "load": "3 x 6", "rest": "2 min" },
-          { "name": "Nordics", "load": "1 x 3", "rest": "2 min" },
-          { "name": "Seated Knee Extensions (Machine)", "load": "3 x 8", "rest": "2 min" },
-          { "name": "Hip Flexion with Cable", "load": "2 x 6 each side", "rest": "2 min" },
-          { "name": "Wall Sit", "load": "2 x 30s", "rest": "2 min" }
+          { "name": "Barbell Back Squat", "load": "3 x 10", "rest": "2 min", "cue": "Bar on your upper back, feet shoulder-width. Brace your core and sit down and back to at least parallel, chest up, then drive up through the whole foot." },
+          { "name": "Single Leg Hamstring Curls (Machine)", "load": "3 x 6", "rest": "2 min", "cue": "Curl the pad towards your glutes one leg at a time, squeeze, then lower slowly — control the lowering phase especially." },
+          { "name": "Nordics", "load": "1 x 3", "rest": "2 min", "cue": "Kneel with your ankles held down. Lower your body towards the floor as slowly as you can, resisting with the hamstrings, then push off your hands to come back up." },
+          { "name": "Seated Knee Extensions (Machine)", "load": "3 x 8", "rest": "2 min", "cue": "Straighten the knees to lift the pad, squeeze the quads at the top for a second, then lower under control." },
+          { "name": "Hip Flexion with Cable", "load": "2 x 6 each side", "rest": "2 min", "cue": "Cable or band on the ankle. Stand tall and drive the knee up to hip height against the resistance, then control it back down." },
+          { "name": "Wall Sit", "load": "2 x 30s", "rest": "2 min", "cue": "Back flat on the wall, thighs parallel to the floor, knees over ankles. Hold strong and keep breathing." }
         ]
       },
       "plyosUppers": {
@@ -195,15 +233,15 @@
         "kind": "gym",
         "title": "Gym 3 — Plyos + Uppers",
         "exercises": [
-          { "name": "DB Walking Lunges", "load": "2 x 8 steps • 10-15kg each hand", "rest": "1.5-2.0 min" },
-          { "name": "Box Jumps", "load": "3 x 6", "rest": "1.5-2.0 min" },
-          { "name": "SL Double Broad Jump", "load": "3 x 3 each side", "rest": "1.5-2.0 min" },
-          { "name": "DB Split CMJ (continuous)", "load": "3 x 5 each side", "rest": "1.5-2.0 min" },
-          { "name": "Rotational Med Ball Toss", "load": "3 x 4 each side • 3-6kg", "rest": "1.5-2.0 min" },
-          { "name": "Press Ups", "load": "2 x 25", "rest": "1.5-2.0 min" },
-          { "name": "DB Lateral Shoulder Raise", "load": "3 x 12", "rest": "1.5-2.0 min" },
-          { "name": "DB Bicep Curls", "load": "3 x 15", "rest": "1.5-2.0 min" },
-          { "name": "DB Push Press", "load": "3 x 6", "rest": "1.5-2.0 min" }
+          { "name": "DB Walking Lunges", "load": "2 x 8 steps • 10-15kg each hand", "rest": "1.5-2.0 min", "cue": "Dumbbell in each hand, step forward into a lunge so both knees bend to about 90°, then step through into the next. Stay tall and controlled." },
+          { "name": "Box Jumps", "load": "3 x 6", "rest": "1.5-2.0 min", "cue": "Quick dip, then explode up onto the box and land soft and quiet with bent knees. Step back down each rep — don't jump down." },
+          { "name": "SL Double Broad Jump", "load": "3 x 3 each side", "rest": "1.5-2.0 min", "cue": "From one leg, do two consecutive broad jumps forward, sticking and holding each landing for a second. Balanced, soft landings." },
+          { "name": "DB Split CMJ (continuous)", "load": "3 x 5 each side", "rest": "1.5-2.0 min", "cue": "In a split stance holding light dumbbells, dip and jump continuously, springing fast off the floor with soft landings each rep." },
+          { "name": "Rotational Med Ball Toss", "load": "3 x 4 each side • 3-6kg", "rest": "1.5-2.0 min", "cue": "Stand side-on to a wall, rotate from the hips and throw the med ball hard into the wall, catch and repeat. Power comes from the trunk, not the arms." },
+          { "name": "Press Ups", "load": "2 x 25", "rest": "1.5-2.0 min", "cue": "Hands under shoulders, body in a straight line. Lower the chest to the floor and push back up; keep the core tight so the hips don't sag." },
+          { "name": "DB Lateral Shoulder Raise", "load": "3 x 12", "rest": "1.5-2.0 min", "cue": "Slight bend in the elbows, raise the dumbbells out to the sides up to shoulder height, then lower slowly. No swinging." },
+          { "name": "DB Bicep Curls", "load": "3 x 15", "rest": "1.5-2.0 min", "cue": "Elbows tucked at your sides, curl the dumbbells up without swinging, squeeze, then lower under control." },
+          { "name": "DB Push Press", "load": "3 x 6", "rest": "1.5-2.0 min", "cue": "Dumbbells at your shoulders, small dip in the knees then drive them overhead using legs and arms together. Lower back to the shoulders." }
         ]
       },
       "uppersCore": {
@@ -211,13 +249,13 @@
         "kind": "gym",
         "title": "Gym 4 — Uppers + Core",
         "exercises": [
-          { "name": "DB Chest Press", "load": "3 x 8", "rest": "2 min" },
-          { "name": "Pull Ups", "load": "3 x 6-8", "rest": "2 min" },
-          { "name": "DB Alternating OH Strict Press", "load": "3 x 6-8 each side", "rest": "2 min" },
-          { "name": "Press Ups", "load": "3 x 20-25", "rest": "2 min" },
-          { "name": "SA Bent Over Row", "load": "3 x 10 each side", "rest": "2 min" },
-          { "name": "Deadbugs", "load": "2 x 8 each side", "rest": "1 min" },
-          { "name": "Side Plank", "load": "2 x 45s each side", "rest": "1 min" }
+          { "name": "DB Chest Press", "load": "3 x 8", "rest": "2 min", "cue": "Lying on a bench, press the dumbbells up over your chest, then lower slowly until your elbows are level with the bench." },
+          { "name": "Pull Ups", "load": "3 x 6-8", "rest": "2 min", "cue": "Hang from the bar, pull your chest up towards it leading with the elbows, then lower all the way under control. Use a resistance band for help if needed." },
+          { "name": "DB Alternating OH Strict Press", "load": "3 x 6-8 each side", "rest": "2 min", "cue": "Standing tall and braced, press one dumbbell overhead at a time without leaning back, lower under control, then swap." },
+          { "name": "Press Ups", "load": "3 x 20-25", "rest": "2 min", "cue": "Straight line from head to heels, lower the chest to the floor and push back up with the core tight." },
+          { "name": "SA Bent Over Row", "load": "3 x 10 each side", "rest": "2 min", "cue": "Single arm. Hinge forward with a flat back, row the dumbbell to your hip leading with the elbow, then lower slowly." },
+          { "name": "Deadbugs", "load": "2 x 8 each side", "rest": "1 min", "cue": "On your back, arms up and knees over hips. Slowly lower the opposite arm and leg towards the floor while keeping your lower back pressed flat, then switch." },
+          { "name": "Side Plank", "load": "2 x 45s each side", "rest": "1 min", "cue": "On one forearm with your body in a straight line, lift the hips and hold. Don't let them drop." }
         ]
       }
     }

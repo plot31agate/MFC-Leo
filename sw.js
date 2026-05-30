@@ -1,5 +1,5 @@
 // Simple offline cache for the app shell. Bump CACHE when files change.
-const CACHE = 'mfc-leo-v2';
+const CACHE = 'mfc-leo-v3';
 const ASSETS = [
   './',
   './index.html',

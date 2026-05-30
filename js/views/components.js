@@ -49,22 +49,30 @@ function renderBody(node, ctx = {}) {
         <ul class="ex-list">
           ${node.exercises.map((e) => `
             <li>
-              <div class="ex-name">${esc(e.name)}</div>
+              <div>
+                <div class="ex-name">${esc(e.name)}</div>
+                ${e.cue ? `<div class="ex-sub">${esc(e.cue)}</div>` : ''}
+              </div>
               <div class="ex-meta">${esc(e.load)}${e.rest ? `<br><span class="ex-sub">rest ${esc(e.rest)}</span>` : ''}</div>
             </li>`).join('')}
         </ul>
         ${node.footer ? `<p class="footnote">${esc(node.footer)}</p>` : ''}`;
 
-    case 'nutrition':
-      return `
-        <div class="nut">
-          ${['before', 'during', 'after'].map((w) => `
-            <div class="nut__col">
-              <div class="nut__when">${w}</div>
-              <div class="nut__goal">${esc(node[w].goal)}</div>
-              <div class="ex-sub">${esc(node[w].examples)}</div>
-            </div>`).join('')}
-        </div>`;
+    case 'nutrition': {
+      const col = (w) => {
+        const x = node[w];
+        if (!x) return '';
+        const ex = Array.isArray(x.examples)
+          ? `<ul class="food-list">${x.examples.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`
+          : `<div class="ex-sub">${esc(x.examples)}</div>`;
+        return `<div class="nut__col"><div class="nut__when">${esc(w)}</div><div class="nut__goal">${esc(x.goal)}</div>${ex}</div>`;
+      };
+      const tips = (node.tips && node.tips.length)
+        ? `<p class="section-title" style="margin-top:14px">Everyday eating</p>
+           <ul class="ex-list">${node.tips.map((t) => `<li><div class="ex-sub">${esc(t)}</div></li>`).join('')}</ul>`
+        : '';
+      return `<div class="nut">${['before', 'during', 'after'].map(col).join('')}</div>${tips}${node.note ? `<p class="footnote">${esc(node.note)}</p>` : ''}`;
+    }
 
     case 'substitutes':
       return `
