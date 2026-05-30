@@ -74,6 +74,7 @@ function maybeIntro() {
     ['Plan', 'The whole 4-week programme, counting down to pre-season.'],
     ['Progress', 'Your stats — sessions done, day streak, 5km best and protein days.'],
     ['Guide', 'Warm-ups, drills, gym sessions and nutrition to look up any time.'],
+    ['Reminders', 'Tap “Add” on the Today prompt to put session & protein alerts on your phone.'],
   ];
   const el = document.createElement('div');
   el.className = 'intro';

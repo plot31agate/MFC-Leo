@@ -43,75 +43,52 @@ function dayDescription(plan, day) {
   return desc;
 }
 
-export function buildICS(plan) {
-  const settings = getSettings();
-  const time = settings.reminderTime || '09:00';
-  const lead = Number(settings.reminderLeadMin ?? 60);
-
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//MFC Leo Training//EN',
-    'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH',
-    `X-WR-CALNAME:Leo · Motherwell Training`,
-  ];
-
-  const dtstamp = utcStamp();
-
-  for (const day of trainingDays(plan)) {
-    const info = typeInfo(plan, day.type);
-    const summary = `⚽ ${info.label}${day.rpe ? ` · RPE ${day.rpe}` : ''}`;
-    const start = localStamp(day.date, time);
-    // Default 90-minute block.
-    const endTime = addMinutes(time, 90);
-    const end = localStamp(day.date, endTime);
-
-    lines.push(
-      'BEGIN:VEVENT',
-      `UID:mfc-${day.date}@leo-training`,
-      `DTSTAMP:${dtstamp}`,
-      `DTSTART:${start}`,
-      `DTEND:${end}`,
-      fold(`SUMMARY:${escText(summary)}`),
-      fold(`DESCRIPTION:${escText(dayDescription(plan, day))}`),
-      'BEGIN:VALARM',
-      'ACTION:DISPLAY',
-      fold(`DESCRIPTION:${escText(summary)}`),
-      `TRIGGER:-PT${lead}M`,
-      'END:VALARM',
-      'END:VEVENT',
-    );
-  }
-
-  lines.push('END:VCALENDAR');
-  return lines.join('\r\n');
-}
-
 function addMinutes(hhmm, mins) {
   const [h, m] = hhmm.split(':').map(Number);
   const total = h * 60 + m + mins;
   return pad(Math.floor(total / 60) % 24) + ':' + pad(total % 60);
 }
 
-export function downloadICS(plan) {
-  triggerDownload(buildICS(plan), 'leo-motherwell-training.ics');
+function calendar(name, eventLines) {
+  return [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//MFC Leo Training//EN',
+    'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', `X-WR-CALNAME:${name}`,
+    ...eventLines, 'END:VCALENDAR',
+  ].join('\r\n');
 }
 
-// Daily recurring protein/meal reminders at the configured times.
-export function buildProteinICS(plan) {
+// VEVENT lines for every training session.
+function sessionEventLines(plan, dtstamp) {
+  const settings = getSettings();
+  const time = settings.reminderTime || '09:00';
+  const lead = Number(settings.reminderLeadMin ?? 60);
+  const lines = [];
+  for (const day of trainingDays(plan)) {
+    const info = typeInfo(plan, day.type);
+    const summary = `⚽ ${info.label}${day.rpe ? ` · RPE ${day.rpe}` : ''}`;
+    lines.push(
+      'BEGIN:VEVENT',
+      `UID:mfc-${day.date}@leo-training`,
+      `DTSTAMP:${dtstamp}`,
+      `DTSTART:${localStamp(day.date, time)}`,
+      `DTEND:${localStamp(day.date, addMinutes(time, 90))}`,
+      fold(`SUMMARY:${escText(summary)}`),
+      fold(`DESCRIPTION:${escText(dayDescription(plan, day))}`),
+      'BEGIN:VALARM', 'ACTION:DISPLAY', fold(`DESCRIPTION:${escText(summary)}`), `TRIGGER:-PT${lead}M`, 'END:VALARM',
+      'END:VEVENT',
+    );
+  }
+  return lines;
+}
+
+// Daily recurring protein/meal reminder VEVENTs.
+function proteinEventLines(plan, dtstamp) {
   const settings = getSettings();
   const times = settings.mealReminderTimes || ['15:00', '18:00', '20:30'];
   const target = plan.proteinTargetG || 140;
   const until = (plan.preSeasonReturn || '2026-12-31').replace(/-/g, '') + 'T235900';
   const startDate = todayISO();
-  const dtstamp = utcStamp();
-
-  const lines = [
-    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//MFC Leo Training//EN',
-    'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Leo · Protein reminders',
-  ];
-
+  const lines = [];
   times.forEach((t, idx) => {
     lines.push(
       'BEGIN:VEVENT',
@@ -126,13 +103,33 @@ export function buildProteinICS(plan) {
       'END:VEVENT',
     );
   });
-
-  lines.push('END:VCALENDAR');
-  return lines.join('\r\n');
+  return lines;
 }
 
+export function buildICS(plan) {
+  return calendar('Leo · Motherwell Training', sessionEventLines(plan, utcStamp()));
+}
+export function downloadICS(plan) {
+  triggerDownload(buildICS(plan), 'leo-motherwell-training.ics');
+}
+
+export function buildProteinICS(plan) {
+  return calendar('Leo · Protein reminders', proteinEventLines(plan, utcStamp()));
+}
 export function downloadProteinICS(plan) {
   triggerDownload(buildProteinICS(plan), 'leo-protein-reminders.ics');
+}
+
+// One file with both session and protein reminders — for the one-tap setup.
+export function buildCombinedICS(plan) {
+  const dtstamp = utcStamp();
+  return calendar('Leo · Motherwell Training', [
+    ...sessionEventLines(plan, dtstamp),
+    ...proteinEventLines(plan, dtstamp),
+  ]);
+}
+export function downloadCombinedICS(plan) {
+  triggerDownload(buildCombinedICS(plan), 'leo-training-reminders.ics');
 }
 
 function triggerDownload(text, filename) {

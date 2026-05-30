@@ -7,7 +7,43 @@ import {
 } from '../storage.js';
 import { todayISO, prettyDate, parseISO, daysBetween, DOW_LONG, MONTHS } from '../util.js';
 import { componentCard, componentHTML } from './components.js';
+import { downloadCombinedICS } from '../ics.js';
 import { esc } from '../util.js';
+
+const REMINDERS_KEY = 'mfc.remindersSet.v1';
+
+function remindersSetupHTML() {
+  let added = false, skipped = false;
+  try { added = !!localStorage.getItem(REMINDERS_KEY); } catch { /* ignore */ }
+  try { skipped = !!sessionStorage.getItem('mfc.remindersSkip'); } catch { /* ignore */ }
+  if (added || skipped) return '';
+  return `
+    <div class="setup" id="reminders-setup">
+      <div class="setup__icon">📅</div>
+      <div class="setup__main">
+        <div class="setup__title">Turn on reminders</div>
+        <div class="setup__sub">Get session &amp; protein alerts on your phone so nothing slips. One tap → “Add All”.</div>
+      </div>
+      <div class="setup__actions">
+        <button class="btn btn--primary btn--sm" id="setup-add">Add</button>
+        <button class="setup__skip" id="setup-skip">Not now</button>
+      </div>
+    </div>`;
+}
+
+function mountReminders(container, ctx) {
+  const banner = container.querySelector('#reminders-setup');
+  if (!banner) return;
+  container.querySelector('#setup-add')?.addEventListener('click', () => {
+    downloadCombinedICS(ctx.plan);
+    try { localStorage.setItem(REMINDERS_KEY, '1'); } catch { /* ignore */ }
+    banner.remove();
+  });
+  container.querySelector('#setup-skip')?.addEventListener('click', () => {
+    try { sessionStorage.setItem('mfc.remindersSkip', '1'); } catch { /* ignore */ }
+    banner.remove();
+  });
+}
 
 export function renderToday(container, ctx) {
   const { plan } = ctx;
@@ -38,6 +74,7 @@ export function renderToday(container, ctx) {
     container.innerHTML = `
       ${heroHTML(kicker, exact.title || info.label, info.blurb, exact, plan, { done: tc.done, total: tc.total }, fuel)}
       ${fuelPopHTML(plan, iso)}
+      ${remindersSetupHTML()}
       <div class="done-banner" id="done-banner" ${tc.all ? '' : 'hidden'}>✓ Completed — great work, Leo!</div>
 
       <div class="row-between" style="margin:20px 2px 10px">
@@ -66,6 +103,7 @@ export function renderToday(container, ctx) {
     `;
 
     mountFuel(container, ctx, iso);
+    mountReminders(container, ctx);
     bindLog(container, exact.date);
     bindTasks(container, ctx, iso, exact.components);
     return;
@@ -82,6 +120,7 @@ export function renderToday(container, ctx) {
   container.innerHTML = `
     ${heroHTML(kicker, title, blurb, null, plan, null, fuel)}
     ${fuelPopHTML(plan, iso)}
+    ${remindersSetupHTML()}
     <section class="card center">
       <div class="big-emoji">${emoji}</div>
       <p class="muted">Recovery matters most on rest days — sleep well, eat well, and still hit your <b>${plan.proteinTargetG || 140}g protein</b>.</p>
@@ -89,6 +128,7 @@ export function renderToday(container, ctx) {
     <button class="btn btn--primary btn--big" id="go-plan">See the full plan</button>
   `;
   mountFuel(container, ctx, iso);
+  mountReminders(container, ctx);
   container.querySelector('#go-plan').addEventListener('click', () => { location.hash = '#/plan'; });
 }
 

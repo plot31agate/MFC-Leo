@@ -3,7 +3,7 @@ import { stats, getSettings, setSetting, exportData, importData } from '../stora
 import { downloadICS, downloadProteinICS } from '../ics.js';
 import { todayISO, daysBetween, esc } from '../util.js';
 
-const APP_BUILD = 'v19 · 30 May';
+const APP_BUILD = 'v20 · 30 May';
 
 export function renderProgress(container, ctx) {
   const { plan } = ctx;
@@ -39,9 +39,6 @@ export function renderProgress(container, ctx) {
       <div class="stat stat--amber"><div class="stat__num"><span class="js-count" data-to="${st.proteinDaysHit}">${st.proteinDaysHit}</span></div><div class="stat__lbl">Days hit ${plan.proteinTargetG || 140}g protein</div></div>
     </div>
 
-    <p class="section-title">By week</p>
-    <section class="card">${weekBars}</section>
-
     <p class="section-title">Reminders</p>
     <section class="card">
       <p class="ex-sub">Add every session to your iPhone calendar with an alert before each one. Open the downloaded file and tap “Add All”.</p>
@@ -65,6 +62,9 @@ export function renderProgress(container, ctx) {
       <div style="height:12px"></div>
       <button class="btn btn--primary" id="add-protein-cal">🍗 Add protein reminders</button>
     </section>
+
+    <p class="section-title">By week</p>
+    <section class="card">${weekBars}</section>
 
     <p class="section-title">Logging</p>
     <a class="btn btn--ghost" href="${esc(plan.stravaTeamUrl || 'https://www.strava.com')}" target="_blank" rel="noopener">Open Strava ↗</a>
