@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Motherwell training">
+  <rect width="512" height="512" fill="#6C1D45"/>
+  <circle cx="256" cy="256" r="205" fill="#FDB913"/>
+  <circle cx="256" cy="256" r="154" fill="#6C1D45"/>
+  <circle cx="256" cy="256" r="102" fill="#FDB913"/>
+  <circle cx="256" cy="256" r="44" fill="#fff"/>
+  <text x="256" y="470" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="64" fill="#FDB913">MFC</text>
+</svg>
