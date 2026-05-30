@@ -242,7 +242,9 @@ label.lbl { font-size: 13px; font-weight: 600; color: var(--muted); display:bloc
 .hero::after {
   content: ""; position: absolute; right: -34px; top: -34px; width: 150px; height: 150px; border-radius: 50%;
   background: radial-gradient(circle, var(--amber) 0%, transparent 70%); opacity: .22;
+  animation: heroGlow 4s ease-in-out infinite;
 }
+@keyframes heroGlow { 0%, 100% { opacity: .16; transform: scale(1); } 50% { opacity: .36; transform: scale(1.12); } }
 .hero__kicker { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); font-weight: 700; margin: 0 0 6px; position: relative; }
 .hero__title { font-family: var(--font-display); font-size: 40px; line-height: .95; margin: 0; text-transform: uppercase; letter-spacing: .5px; position: relative; }
 .hero__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; position: relative; }
@@ -367,4 +369,46 @@ label.lbl { font-size: 13px; font-weight: 600; color: var(--muted); display:bloc
 @media (prefers-reduced-motion: reduce) {
   .app-main > * { animation: none; }
   .ring__fg { transition: none; }
+}
+
+/* ---------- Splash ---------- */
+.splash {
+  position: fixed; inset: 0; z-index: 100; background: var(--claret);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .5s ease;
+}
+.splash.is-hidden { opacity: 0; pointer-events: none; }
+.splash__inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.splash__crest {
+  width: 120px; height: 120px; border-radius: 22px; box-shadow: 0 12px 44px rgba(0,0,0,.45);
+  animation: splashIn .7s cubic-bezier(.22,1,.36,1) both;
+}
+.splash__name {
+  font-family: var(--font-display); font-size: 22px; letter-spacing: .14em; color: var(--amber);
+  opacity: 0; animation: splashName .6s ease .35s forwards;
+}
+@keyframes splashIn { 0% { opacity: 0; transform: scale(.6); } 60% { opacity: 1; } 100% { opacity: 1; transform: scale(1); } }
+@keyframes splashName { to { opacity: 1; } }
+
+/* ---------- First-run intro ---------- */
+.intro {
+  position: fixed; inset: 0; z-index: 90; background: rgba(40,10,25,.72); backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  transition: opacity .35s ease;
+}
+.intro.is-hidden { opacity: 0; pointer-events: none; }
+.intro__card {
+  background: #fff; border-radius: 18px; padding: 22px; width: 100%; max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35); animation: splashIn .4s ease both; max-height: 86vh; overflow-y: auto;
+}
+.intro__card h2 { font-family: var(--font-display); font-size: 26px; margin: 0 0 4px; color: var(--claret); letter-spacing: .5px; }
+.intro__list { list-style: none; margin: 16px 0 18px; padding: 0; }
+.intro__list li { display: flex; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); }
+.intro__list li:first-child { border-top: none; }
+.intro__bullet { width: 8px; border-radius: 6px; background: var(--amber); flex: none; align-self: stretch; }
+.intro__list b { display: block; color: var(--ink); }
+.intro__list span { font-size: 13.5px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) {
+  .hero::after { animation: none; }
+  .splash__crest, .splash__name, .intro__card { animation: none; opacity: 1; }
 }

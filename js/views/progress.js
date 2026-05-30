@@ -3,7 +3,7 @@ import { stats, getSettings, setSetting, exportData, importData } from '../stora
 import { downloadICS, downloadProteinICS } from '../ics.js';
 import { todayISO, daysBetween, esc } from '../util.js';
 
-const APP_BUILD = 'v18 · 30 May';
+const APP_BUILD = 'v19 · 30 May';
 
 export function renderProgress(container, ctx) {
   const { plan } = ctx;
@@ -24,7 +24,7 @@ export function renderProgress(container, ctx) {
   container.innerHTML = `
     <section class="hero">
       <p class="hero__kicker">Your progress</p>
-      <h1 class="hero__title">${st.percent}% complete</h1>
+      <h1 class="hero__title"><span class="js-count" data-to="${st.percent}">${st.percent}</span>% complete</h1>
       <p class="hero__blurb">${st.done} of ${st.total} sessions · ${daysToGo > 0 ? `${daysToGo} day${daysToGo === 1 ? '' : 's'} to pre-season` : 'pre-season is here'}</p>
       <div class="hero__progress">
         <div class="hero__pbar"><span style="width:${st.percent}%"></span></div>
@@ -33,10 +33,10 @@ export function renderProgress(container, ctx) {
     </section>
 
     <div class="stat-grid">
-      <div class="stat"><div class="stat__num">${st.done}<span style="font-size:16px;color:var(--muted)">/${st.total}</span></div><div class="stat__lbl">Sessions done</div></div>
-      <div class="stat"><div class="stat__num">${st.streak}</div><div class="stat__lbl">Day streak 🔥</div></div>
+      <div class="stat"><div class="stat__num"><span class="js-count" data-to="${st.done}">${st.done}</span><span style="font-size:16px;color:var(--muted)">/${st.total}</span></div><div class="stat__lbl">Sessions done</div></div>
+      <div class="stat"><div class="stat__num"><span class="js-count" data-to="${st.streak}">${st.streak}</span></div><div class="stat__lbl">Day streak 🔥</div></div>
       <div class="stat"><div class="stat__num">${st.pb ? esc(st.pb.display) : '—'}</div><div class="stat__lbl">5km best</div></div>
-      <div class="stat stat--amber"><div class="stat__num">${st.proteinDaysHit}</div><div class="stat__lbl">Days hit ${plan.proteinTargetG || 140}g protein</div></div>
+      <div class="stat stat--amber"><div class="stat__num"><span class="js-count" data-to="${st.proteinDaysHit}">${st.proteinDaysHit}</span></div><div class="stat__lbl">Days hit ${plan.proteinTargetG || 140}g protein</div></div>
     </div>
 
     <p class="section-title">By week</p>

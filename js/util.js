@@ -40,3 +40,29 @@ export function esc(s) {
 // Turn http(s) URLs in text into a short tappable "Watch" link list is handled elsewhere;
 // here just a guard for valid links.
 export function isUrl(s) { return /^https?:\/\//i.test(s || ''); }
+
+export function prefersReducedMotion() {
+  return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// Count a number element up from 0 to its target (read from data-to or text).
+export function animateCount(el, to, duration = 750) {
+  const target = Number(to);
+  if (!(target > 0) || prefersReducedMotion()) { el.textContent = String(target || el.textContent); return; }
+  const start = performance.now();
+  const tick = (now) => {
+    const t = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = String(Math.round(eased * target));
+    if (t < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// Animate every .js-count element under root.
+export function runCounters(root = document) {
+  root.querySelectorAll('.js-count').forEach((el) => {
+    const to = el.dataset.to ?? el.textContent;
+    if (!Number.isNaN(Number(to))) animateCount(el, to);
+  });
+}
