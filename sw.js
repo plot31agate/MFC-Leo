@@ -1,5 +1,5 @@
 // Simple offline cache for the app shell. Bump CACHE when files change.
-const CACHE = 'mfc-leo-v7';
+const CACHE = 'mfc-leo-v8';
 const ASSETS = [
   './',
   './index.html',
@@ -37,16 +37,23 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then((hit) =>
-      hit || fetch(e.request).then((res) => {
-        // Cache same-origin successful responses for next time.
-        if (res.ok && new URL(e.request.url).origin === location.origin) {
+  const url = new URL(e.request.url);
+  const sameOrigin = url.origin === location.origin;
+
+  if (sameOrigin) {
+    // Network-first: always try the latest deploy, fall back to cache offline.
+    e.respondWith(
+      fetch(e.request).then((res) => {
+        if (res && res.ok) {
           const copy = res.clone();
           caches.open(CACHE).then((c) => c.put(e.request, copy));
         }
         return res;
-      }).catch(() => caches.match('./index.html'))
-    )
-  );
+      }).catch(() => caches.match(e.request).then((hit) => hit || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Cross-origin (e.g. Google Fonts): cache-first.
+  e.respondWith(caches.match(e.request).then((hit) => hit || fetch(e.request)));
 });
