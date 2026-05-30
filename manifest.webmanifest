@@ -1,7 +1,7 @@
 {
-  "name": "Leo · Motherwell Training",
-  "short_name": "Leo · MFC",
-  "description": "Leo's Motherwell FC pre-season training tracker.",
+  "name": "MFC Pre-Season",
+  "short_name": "MFC Pre-Season",
+  "description": "Motherwell FC academy pre-season training tracker.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

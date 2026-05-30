@@ -4,6 +4,7 @@ import { resolveToday, resolveRef, typeInfo, rpeColour } from '../plan.js';
 import {
   getDay, setDayDone, setDayField, getTasks, setTask, taskCount,
   getProteinLog, proteinTotal, addProtein, removeProtein, proteinStreak,
+  proteinTarget,
 } from '../storage.js';
 import { todayISO, prettyDate, parseISO, daysBetween, DOW_LONG, MONTHS } from '../util.js';
 import { componentCard, componentHTML } from './components.js';
@@ -75,7 +76,7 @@ export function renderToday(container, ctx) {
       ${heroHTML(kicker, exact.title || info.label, info.blurb, exact, plan, { done: tc.done, total: tc.total }, fuel)}
       ${fuelPopHTML(plan, iso)}
       ${remindersSetupHTML()}
-      <div class="done-banner" id="done-banner" ${tc.all ? '' : 'hidden'}>✓ Completed — great work, Leo!</div>
+      <div class="done-banner" id="done-banner" ${tc.all ? '' : 'hidden'}>✓ Completed — great work!</div>
 
       <div class="row-between" style="margin:20px 2px 10px">
         <h2 class="block-title" style="margin:0">Your session <span class="block-title__hint">— tick as you go</span></h2>
@@ -112,7 +113,7 @@ export function renderToday(container, ctx) {
   // ---- Non-training days ----
   let title, blurb, emoji = '🛌';
   if (state === 'before') { title = 'Counting down'; blurb = `Programme starts ${prettyDate(day.date)} — ${daysBetween(iso, day.date)} day(s) to go. Rest up and recover. 🌴`; emoji = '🌴'; }
-  else if (state === 'after') { title = 'Pre-Season!'; blurb = "Players have returned. You put the work in — go and show them, Leo. 💪"; emoji = '⚽'; }
+  else if (state === 'after') { title = 'Pre-Season!'; blurb = "Players have returned. You put the work in — go and show them. 💪"; emoji = '⚽'; }
   else if (exact && exact.type === 'preseason') { title = 'Pre-Season!'; blurb = 'Players return for pre-season training today. 💪'; emoji = '⚽'; }
   else if (state === 'between') { title = 'Rest day'; blurb = day ? `Nothing scheduled — recover well. Next up: ${typeInfo(plan, day.type).label} on ${prettyDate(day.date)}.` : 'Recover well.'; }
   else { title = exact && exact.type === 'off' ? 'Day Off' : 'Recovery'; blurb = (exact ? typeInfo(plan, exact.type).blurb : '') || 'Rest day — take it. Recovery is part of the plan.'; }
@@ -123,7 +124,7 @@ export function renderToday(container, ctx) {
     ${remindersSetupHTML()}
     <section class="card center">
       <div class="big-emoji">${emoji}</div>
-      <p class="muted">Recovery matters most on rest days — sleep well, eat well, and still hit your <b>${plan.proteinTargetG || 140}g protein</b>.</p>
+      <p class="muted">Recovery matters most on rest days — sleep well, eat well, and still hit your <b>${proteinTarget(plan)}g protein</b>.</p>
     </section>
     <button class="btn btn--primary btn--big" id="go-plan">See the full plan</button>
   `;
@@ -156,7 +157,7 @@ function heroHTML(kicker, title, blurb, day, plan, progress, fuel) {
 
 // ---------- Protein fuel strip + pop-out panel ----------
 function fuelData(plan, iso) {
-  const target = plan.proteinTargetG || 140;
+  const target = proteinTarget(plan);
   const total = proteinTotal(iso);
   return { total, target, pct: Math.round(Math.min(total / target, 1) * 100), hit: total >= target, streak: proteinStreak(target) };
 }
@@ -198,7 +199,7 @@ function mountFuel(container, ctx, iso) {
   const toggle = container.querySelector('#fuel-toggle');
   const pop = container.querySelector('#fuel-pop');
   if (!toggle || !pop) return;
-  const target = plan.proteinTargetG || 140;
+  const target = proteinTarget(plan);
 
   const updateBar = () => {
     const f = fuelData(plan, iso);

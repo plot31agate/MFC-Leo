@@ -1,10 +1,40 @@
 // Local-only persistence: completion, notes, metrics and settings.
-// Everything lives in localStorage on Leo's phone. No server, no accounts.
+// Everything lives in localStorage on this player's phone. No server, no accounts.
 import { trainingDays } from './plan.js';
 import { todayISO, daysBetween, isoDate } from './util.js';
 
 const PROGRESS_KEY = 'mfc.progress.v1';
 const SETTINGS_KEY = 'mfc.settings.v1';
+const PROFILE_KEY = 'mfc.profile.v1';
+
+// ---- Player profile (per phone) ----
+// Each install belongs to one player. Name + protein target are theirs;
+// the training plan itself is shared academy-wide.
+export function getProfile() {
+  return readJSON(PROFILE_KEY, null);
+}
+export function hasProfile() {
+  const p = getProfile();
+  return !!(p && p.name);
+}
+export function saveProfile(profile) {
+  const clean = {
+    name: String(profile.name || '').trim().slice(0, 40),
+    proteinTargetG: Math.max(0, Math.round(Number(profile.proteinTargetG) || 0)) || null,
+  };
+  writeJSON(PROFILE_KEY, clean);
+  return clean;
+}
+// The player's name, falling back to the plan default.
+export function playerName(plan) {
+  const p = getProfile();
+  return (p && p.name) || (plan && (plan.athleteName || plan.athlete)) || 'Player';
+}
+// The player's protein target, falling back to the plan default.
+export function proteinTarget(plan) {
+  const p = getProfile();
+  return (p && p.proteinTargetG) || (plan && plan.proteinTargetG) || 140;
+}
 
 function readJSON(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
@@ -137,8 +167,8 @@ export function stats(plan) {
     }
   }
 
-  // Protein: how many days hit the daily target.
-  const target = plan.proteinTargetG || 0;
+  // Protein: how many days hit the daily target (per-player, falling back to plan).
+  const target = proteinTarget(plan);
   let proteinDaysHit = 0;
   if (target) {
     for (const rec of Object.values(prog)) {
@@ -158,8 +188,9 @@ function toSecs(mmss) {
 // ---- Backup / restore ----
 export function exportData() {
   return JSON.stringify({
-    app: 'mfc-leo',
+    app: 'mfc-academy',
     exportedAt: new Date().toISOString(),
+    profile: getProfile(),
     progress: getProgress(),
     settings: getSettings(),
   }, null, 2);
@@ -167,6 +198,7 @@ export function exportData() {
 
 export function importData(json) {
   const data = JSON.parse(json);
+  if (data.profile) writeJSON(PROFILE_KEY, data.profile);
   if (data.progress) writeJSON(PROGRESS_KEY, data.progress);
   if (data.settings) writeJSON(SETTINGS_KEY, data.settings);
 }

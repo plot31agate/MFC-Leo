@@ -1,8 +1,13 @@
-// Generates an .ics calendar file from the programme so Leo can import every
-// session into his iPhone calendar with a native alarm before each one.
+// Generates an .ics calendar file from the programme so a player can import every
+// session into their iPhone calendar with a native alarm before each one.
 import { trainingDays, resolveRef, typeInfo } from './plan.js';
-import { getSettings } from './storage.js';
+import { getSettings, playerName, proteinTarget } from './storage.js';
 import { todayISO } from './util.js';
+
+// Lowercase, filesystem-safe slug for download filenames (e.g. "leo-lee").
+function slug(s) {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'player';
+}
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -51,7 +56,7 @@ function addMinutes(hhmm, mins) {
 
 function calendar(name, eventLines) {
   return [
-    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//MFC Leo Training//EN',
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//MFC Academy Training//EN',
     'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', `X-WR-CALNAME:${name}`,
     ...eventLines, 'END:VCALENDAR',
   ].join('\r\n');
@@ -68,7 +73,7 @@ function sessionEventLines(plan, dtstamp) {
     const summary = `⚽ ${info.label}${day.rpe ? ` · RPE ${day.rpe}` : ''}`;
     lines.push(
       'BEGIN:VEVENT',
-      `UID:mfc-${day.date}@leo-training`,
+      `UID:mfc-${day.date}@mfc-training`,
       `DTSTAMP:${dtstamp}`,
       `DTSTART:${localStamp(day.date, time)}`,
       `DTEND:${localStamp(day.date, addMinutes(time, 90))}`,
@@ -85,14 +90,14 @@ function sessionEventLines(plan, dtstamp) {
 function proteinEventLines(plan, dtstamp) {
   const settings = getSettings();
   const times = settings.mealReminderTimes || ['15:00', '18:00', '20:30'];
-  const target = plan.proteinTargetG || 140;
+  const target = proteinTarget(plan);
   const until = (plan.preSeasonReturn || '2026-12-31').replace(/-/g, '') + 'T235900';
   const startDate = todayISO();
   const lines = [];
   times.forEach((t, idx) => {
     lines.push(
       'BEGIN:VEVENT',
-      `UID:mfc-protein-${idx}-${t.replace(':', '')}@leo-training`,
+      `UID:mfc-protein-${idx}-${t.replace(':', '')}@mfc-training`,
       `DTSTAMP:${dtstamp}`,
       `DTSTART:${localStamp(startDate, t)}`,
       `DTEND:${localStamp(startDate, addMinutes(t, 15))}`,
@@ -107,29 +112,29 @@ function proteinEventLines(plan, dtstamp) {
 }
 
 export function buildICS(plan) {
-  return calendar('Leo · Motherwell Training', sessionEventLines(plan, utcStamp()));
+  return calendar(`${playerName(plan)} · Motherwell Training`, sessionEventLines(plan, utcStamp()));
 }
 export function downloadICS(plan) {
-  triggerDownload(buildICS(plan), 'leo-motherwell-training.ics');
+  triggerDownload(buildICS(plan), `${slug(playerName(plan))}-motherwell-training.ics`);
 }
 
 export function buildProteinICS(plan) {
-  return calendar('Leo · Protein reminders', proteinEventLines(plan, utcStamp()));
+  return calendar(`${playerName(plan)} · Protein reminders`, proteinEventLines(plan, utcStamp()));
 }
 export function downloadProteinICS(plan) {
-  triggerDownload(buildProteinICS(plan), 'leo-protein-reminders.ics');
+  triggerDownload(buildProteinICS(plan), `${slug(playerName(plan))}-protein-reminders.ics`);
 }
 
 // One file with both session and protein reminders — for the one-tap setup.
 export function buildCombinedICS(plan) {
   const dtstamp = utcStamp();
-  return calendar('Leo · Motherwell Training', [
+  return calendar(`${playerName(plan)} · Motherwell Training`, [
     ...sessionEventLines(plan, dtstamp),
     ...proteinEventLines(plan, dtstamp),
   ]);
 }
 export function downloadCombinedICS(plan) {
-  triggerDownload(buildCombinedICS(plan), 'leo-training-reminders.ics');
+  triggerDownload(buildCombinedICS(plan), `${slug(playerName(plan))}-training-reminders.ics`);
 }
 
 function triggerDownload(text, filename) {

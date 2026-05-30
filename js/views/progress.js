@@ -1,14 +1,17 @@
 // Progress, reminders (calendar export) and settings/backup.
-import { stats, getSettings, setSetting, exportData, importData } from '../storage.js';
+import { stats, getSettings, setSetting, exportData, importData,
+  getProfile, saveProfile, playerName, proteinTarget } from '../storage.js';
 import { downloadICS, downloadProteinICS } from '../ics.js';
 import { todayISO, daysBetween, esc } from '../util.js';
 
-const APP_BUILD = 'v20 · 30 May';
+const APP_BUILD = 'v21 · 30 May';
 
 export function renderProgress(container, ctx) {
   const { plan } = ctx;
   const st = stats(plan);
   const s = getSettings();
+  const profile = getProfile() || {};
+  const target = proteinTarget(plan);
 
   const weekBars = plan.weeks.filter((w) => w.days.length).map((w) => {
     const ws = st.byWeek[w.week] || { done: 0, total: 0 };
@@ -36,7 +39,7 @@ export function renderProgress(container, ctx) {
       <div class="stat"><div class="stat__num"><span class="js-count" data-to="${st.done}">${st.done}</span><span style="font-size:16px;color:var(--muted)">/${st.total}</span></div><div class="stat__lbl">Sessions done</div></div>
       <div class="stat"><div class="stat__num"><span class="js-count" data-to="${st.streak}">${st.streak}</span></div><div class="stat__lbl">Day streak 🔥</div></div>
       <div class="stat"><div class="stat__num">${st.pb ? esc(st.pb.display) : '—'}</div><div class="stat__lbl">5km best</div></div>
-      <div class="stat stat--amber"><div class="stat__num"><span class="js-count" data-to="${st.proteinDaysHit}">${st.proteinDaysHit}</span></div><div class="stat__lbl">Days hit ${plan.proteinTargetG || 140}g protein</div></div>
+      <div class="stat stat--amber"><div class="stat__num"><span class="js-count" data-to="${st.proteinDaysHit}">${st.proteinDaysHit}</span></div><div class="stat__lbl">Days hit ${target}g protein</div></div>
     </div>
 
     <p class="section-title">Reminders</p>
@@ -54,7 +57,7 @@ export function renderProgress(container, ctx) {
 
     <p class="section-title">Protein reminders</p>
     <section class="card">
-      <p class="ex-sub">Daily nudges to top up protein towards ${plan.proteinTargetG || 140}g. They pop up natively and open the app to log it.</p>
+      <p class="ex-sub">Daily nudges to top up protein towards ${target}g. They pop up natively and open the app to log it.</p>
       <label class="lbl">Reminder times</label>
       <div class="meal-times">
         ${s.mealReminderTimes.map((t, i) => `<input class="field meal-time" data-i="${i}" type="time" value="${esc(t)}" />`).join('')}
@@ -70,6 +73,17 @@ export function renderProgress(container, ctx) {
     <a class="btn btn--ghost" href="${esc(plan.stravaTeamUrl || 'https://www.strava.com')}" target="_blank" rel="noopener">Open Strava ↗</a>
     <p class="footnote">The club logs all runs &amp; gym on Strava — “if you didn't Strava it, it didn't happen.”</p>
 
+    <p class="section-title">Profile</p>
+    <section class="card">
+      <p class="ex-sub">This is your copy of the app. Set your name and daily protein target.</p>
+      <label class="lbl" for="pf-name">Name</label>
+      <input class="field" id="pf-name" type="text" maxlength="40" value="${esc(profile.name || '')}" placeholder="First name" />
+      <label class="lbl" for="pf-protein">Daily protein target (g)</label>
+      <input class="field" id="pf-protein" type="number" inputmode="numeric" min="0" max="400" step="5" value="${esc(String(target))}" />
+      <div style="height:12px"></div>
+      <button class="btn btn--primary" id="save-profile">Save profile</button>
+    </section>
+
     <p class="section-title">Backup</p>
     <section class="card">
       <p class="ex-sub">Your progress is saved on this phone only. Export a backup before changing phone or clearing Safari.</p>
@@ -78,8 +92,18 @@ export function renderProgress(container, ctx) {
       <input type="file" id="import-file" accept="application/json,.json" hidden />
     </section>
 
-    <p class="footnote center" style="margin-top:18px">Leo · Motherwell Training — build ${esc(APP_BUILD)}</p>
+    <p class="footnote center" style="margin-top:18px">${esc(playerName(plan))} · Motherwell Training — build ${esc(APP_BUILD)}</p>
   `;
+
+  const saveBtn = container.querySelector('#save-profile');
+  if (saveBtn) saveBtn.addEventListener('click', () => {
+    const name = container.querySelector('#pf-name').value.trim();
+    if (!name) { container.querySelector('#pf-name').focus(); return; }
+    saveProfile({ name, proteinTargetG: container.querySelector('#pf-protein').value });
+    const titleEl = document.getElementById('header-title');
+    if (titleEl) titleEl.textContent = playerName(plan);
+    ctx.refresh();
+  });
 
   container.querySelector('#rtime').addEventListener('change', (e) => setSetting('reminderTime', e.target.value));
   container.querySelector('#rlead').addEventListener('change', (e) => setSetting('reminderLeadMin', Number(e.target.value)));
@@ -94,7 +118,7 @@ export function renderProgress(container, ctx) {
     const blob = new Blob([exportData()], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'leo-training-backup.json';
+    a.href = url; a.download = 'mfc-training-backup.json';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
