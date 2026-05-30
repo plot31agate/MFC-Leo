@@ -1,8 +1,7 @@
 // Progress, reminders (calendar export) and settings/backup.
 import { stats, getSettings, setSetting, exportData, importData } from '../storage.js';
 import { downloadICS, downloadProteinICS } from '../ics.js';
-import { typeInfo } from '../plan.js';
-import { esc } from '../util.js';
+import { todayISO, daysBetween, esc } from '../util.js';
 
 export function renderProgress(container, ctx) {
   const { plan } = ctx;
@@ -19,13 +18,23 @@ export function renderProgress(container, ctx) {
       </div>`;
   }).join('');
 
+  const daysToGo = daysBetween(todayISO(), plan.preSeasonReturn);
   container.innerHTML = `
+    <section class="hero">
+      <p class="hero__kicker">Your progress</p>
+      <h1 class="hero__title">${st.percent}% complete</h1>
+      <p class="hero__blurb">${st.done} of ${st.total} sessions · ${daysToGo > 0 ? `${daysToGo} day${daysToGo === 1 ? '' : 's'} to pre-season` : 'pre-season is here'}</p>
+      <div class="hero__progress">
+        <div class="hero__pbar"><span style="width:${st.percent}%"></span></div>
+        <span class="hero__pcount">🔥 ${st.streak}</span>
+      </div>
+    </section>
+
     <div class="stat-grid">
       <div class="stat"><div class="stat__num">${st.done}<span style="font-size:16px;color:var(--muted)">/${st.total}</span></div><div class="stat__lbl">Sessions done</div></div>
-      <div class="stat stat--amber"><div class="stat__num">${st.percent}%</div><div class="stat__lbl">Complete</div></div>
-      <div class="stat"><div class="stat__num">${st.streak} 🔥</div><div class="stat__lbl">Day streak</div></div>
+      <div class="stat"><div class="stat__num">${st.streak}</div><div class="stat__lbl">Day streak 🔥</div></div>
       <div class="stat"><div class="stat__num">${st.pb ? esc(st.pb.display) : '—'}</div><div class="stat__lbl">5km best</div></div>
-      <div class="stat stat--wide"><div class="stat__num">${st.proteinDaysHit}</div><div class="stat__lbl">Days you hit ${plan.proteinTargetG || 140}g protein</div></div>
+      <div class="stat stat--amber"><div class="stat__num">${st.proteinDaysHit}</div><div class="stat__lbl">Days hit ${plan.proteinTargetG || 140}g protein</div></div>
     </div>
 
     <p class="section-title">By week</p>

@@ -1,7 +1,7 @@
 // The full 4-week schedule, and a tap-through detail for any day.
 import { allDays, resolveRef, typeInfo, rpeColour } from '../plan.js';
 import { getProgress, getDay, setDayDone, stats } from '../storage.js';
-import { todayISO, prettyDate, parseISO, DOW, MONTHS } from '../util.js';
+import { todayISO, prettyDate, parseISO, daysBetween, DOW, MONTHS } from '../util.js';
 import { componentHTML } from './components.js';
 import { esc } from '../util.js';
 
@@ -11,13 +11,16 @@ export function renderPlan(container, ctx) {
   const today = todayISO();
   const st = stats(plan);
 
+  const daysToGo = daysBetween(today, plan.preSeasonReturn);
   let html = `
-    <section class="card card--accent">
-      <div class="row-between">
-        <div><strong>Road to pre-season</strong><div class="ex-sub">Players return ${esc(prettyDate(plan.preSeasonReturn))}</div></div>
-        <div class="wpct">${st.percent}%</div>
+    <section class="hero">
+      <p class="hero__kicker">Road to pre-season</p>
+      <h1 class="hero__title">${daysToGo > 0 ? `${daysToGo} day${daysToGo === 1 ? '' : 's'} to go` : 'Pre-season!'}</h1>
+      <p class="hero__blurb">Players return ${esc(prettyDate(plan.preSeasonReturn))}</p>
+      <div class="hero__progress">
+        <div class="hero__pbar"><span style="width:${st.percent}%"></span></div>
+        <span class="hero__pcount">${st.percent}%</span>
       </div>
-      <div class="bar" style="margin-top:10px"><span style="width:${st.percent}%"></span></div>
     </section>`;
 
   for (const wk of plan.weeks) {
@@ -40,13 +43,13 @@ export function renderPlan(container, ctx) {
       const isToday = day.date === today ? '1' : '0';
       const tappable = day.components && day.components.length > 0;
       html += `
-        <button class="day-row" data-today="${isToday}" data-date="${esc(day.date)}" ${tappable ? '' : 'disabled style="opacity:.7;cursor:default"'}>
+        <button class="day-row ${tappable ? '' : 'day-row--rest'}" data-today="${isToday}" data-date="${esc(day.date)}" ${tappable ? '' : 'disabled'} style="border-left-color:${info.colour}">
           <div class="day-row__date">
             <div class="day-row__dow">${DOW[d.getDay()]}</div>
             <div class="day-row__num">${d.getDate()}</div>
           </div>
           <div class="day-row__main">
-            <div class="day-row__type"><span class="badge-dot" style="background:${info.colour}"></span> ${esc(info.label)}${day.rpe ? ` · <span class="muted">RPE ${esc(day.rpe)}</span>` : ''}</div>
+            <div class="day-row__type">${esc(info.label)}${day.rpe ? ` · <span class="muted">RPE ${esc(day.rpe)}</span>` : ''}${isToday === '1' ? ' <span class="today-pill">TODAY</span>' : ''}</div>
             <div class="day-row__sub">${esc(sub)}</div>
           </div>
           <div class="day-row__tick" data-done="${done ? '1' : '0'}">${done ? '✓' : ''}</div>
@@ -87,12 +90,12 @@ export function renderDay(container, ctx, dateIso) {
   }).join('');
 
   container.innerHTML = `
-    <button class="btn btn--ghost btn--sm" id="back" style="margin-bottom:12px">‹ Back to plan</button>
-    <section class="card card--accent">
-      <p class="date muted">${DOW[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} · Week ${day.week}</p>
-      <h2 style="margin:.2em 0">${esc(day.title || info.label)}</h2>
-      <div class="chips">
-        <span class="chip" style="background:${info.colour};color:#fff">${esc(info.label)}</span>
+    <button class="link-btn" id="back" style="margin-bottom:10px">‹ Back to plan</button>
+    <section class="hero">
+      <p class="hero__kicker">${DOW[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]} · Week ${day.week}</p>
+      <h1 class="hero__title">${esc(day.title || info.label)}</h1>
+      <div class="hero__chips">
+        <span class="chip chip--type">${esc(info.label)}</span>
         ${day.rpe ? `<span class="chip chip--rpe" style="background:${rpeColour(plan, day.rpe)}">RPE ${esc(day.rpe)}</span>` : ''}
       </div>
     </section>

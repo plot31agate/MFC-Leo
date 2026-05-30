@@ -124,10 +124,12 @@ label.lbl { font-size: 13px; font-weight: 600; color: var(--muted); display:bloc
 .week-head .wpct { font-size: 13px; color: var(--muted); font-weight: 600; }
 .day-row {
   display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
-  background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
+  background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
   font: inherit; cursor: pointer; color: inherit;
 }
-.day-row[data-today="1"] { border-color: var(--amber); border-width: 2px; }
+.day-row[data-today="1"] { box-shadow: 0 0 0 2px var(--amber); }
+.day-row--rest { opacity: .6; cursor: default; }
+.today-pill { background: var(--amber); color: #3a2400; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 999px; letter-spacing: .05em; margin-left: 6px; vertical-align: middle; }
 .day-row__date { width: 46px; flex: none; text-align: center; }
 .day-row__dow { font-size: 11px; text-transform: uppercase; color: var(--muted); }
 .day-row__num { font-size: 19px; font-weight: 800; line-height: 1; }
