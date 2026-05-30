@@ -282,6 +282,30 @@ label.lbl { font-size: 13px; font-weight: 600; color: var(--muted); display:bloc
 .btn--big { padding: 16px; font-size: 17px; }
 .btn--strava { background: #fc4c02; color: #fff; margin-top: 6px; }
 
+/* Hero session progress */
+.hero__progress { display: flex; align-items: center; gap: 10px; margin-top: 14px; position: relative; }
+.hero__pbar { flex: 1; height: 8px; border-radius: 6px; background: #ffffff2e; overflow: hidden; }
+.hero__pbar > span { display: block; height: 100%; background: var(--amber); transition: width .3s ease; }
+.hero__pcount { font-family: var(--font-display); font-size: 16px; color: #fff; white-space: nowrap; }
+
+/* Inline "Mark all" link */
+.link-btn { background: none; border: none; color: var(--claret); font: inherit; font-weight: 700; font-size: 13px; cursor: pointer; padding: 4px; }
+
+/* Compact protein strip (training days) */
+.card--protein-strip { padding: 14px 16px; }
+.pstrip__head { display: flex; align-items: center; gap: 12px; cursor: pointer; list-style: none; }
+.pstrip__head::-webkit-details-marker { display: none; }
+.pstrip__main { flex: 1; min-width: 0; }
+.pstrip__row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.pstrip__title { font-weight: 700; font-size: 15px; }
+.pstrip__title b { font-family: var(--font-display); font-weight: 400; color: var(--amber); margin-left: 4px; font-size: 18px; }
+.pstrip__hint { font-size: 12px; color: #ffe9b0; font-weight: 700; white-space: nowrap; }
+.pstrip__hint.is-hit { color: #9ff0c4; }
+.bar--onclaret { background: #ffffff2e; height: 8px; }
+.bar--onclaret > span { background: var(--amber); transition: width .4s ease; }
+.bar--onclaret > span.is-hit { background: #39d98a; }
+.pstrip__head .sess__chev { color: #ffffffb3; }
+
 /* Numbers in stats use the display font */
 .stat__num { font-family: var(--font-display); }
 .stat--wide { grid-column: 1 / -1; }
