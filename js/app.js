@@ -10,14 +10,6 @@ const app = document.getElementById('app');
 const titleEl = document.getElementById('header-title');
 const metaEl = document.getElementById('header-meta');
 
-const TITLES = {
-  today: 'Today',
-  plan: 'Plan',
-  progress: 'Progress',
-  reference: 'Guide',
-  day: 'Session',
-};
-
 function setHeaderMeta(plan) {
   if (!metaEl || !plan) return;
   const days = daysBetween(todayISO(), plan.preSeasonReturn);
@@ -38,7 +30,6 @@ function setActiveTab(name) {
   document.querySelectorAll('.tabbar__item').forEach((el) => {
     el.classList.toggle('is-active', el.dataset.tab === name);
   });
-  titleEl.textContent = TITLES[name] || 'Today';
 }
 
 function render() {
@@ -66,6 +57,7 @@ async function start() {
   try {
     const plan = await loadPlan();
     ctx = { plan, refresh: render, navigate: (h) => { location.hash = h; } };
+    if (titleEl) titleEl.textContent = plan.athleteName || plan.athlete || 'Leo';
     setHeaderMeta(plan);
   } catch (err) {
     app.innerHTML = `<div class="note">Couldn't load the training plan.<br><small>${err.message}</small></div>`;
