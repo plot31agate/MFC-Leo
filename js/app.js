@@ -4,7 +4,6 @@ import { renderToday } from './views/today.js';
 import { renderPlan, renderDay } from './views/plan.js';
 import { renderProgress } from './views/progress.js';
 import { renderReference } from './views/reference.js';
-import { mountProteinBar, updateProteinBar } from './views/proteinbar.js';
 
 const app = document.getElementById('app');
 const titleEl = document.getElementById('header-title');
@@ -56,8 +55,7 @@ function render() {
 async function start() {
   try {
     const plan = await loadPlan();
-    ctx = { plan, refresh: render, navigate: (h) => { location.hash = h; }, updateProteinBar };
-    mountProteinBar(plan);
+    ctx = { plan, refresh: render, navigate: (h) => { location.hash = h; } };
   } catch (err) {
     app.innerHTML = `<div class="note">Couldn't load the training plan.<br><small>${err.message}</small></div>`;
     return;
