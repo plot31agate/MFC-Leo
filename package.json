@@ -1,0 +1,24 @@
+{
+  "name": "mfc-academy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Motherwell FC academy pre-season training tracker.",
+  "type": "module",
+  "scripts": {
+    "copy:web": "node scripts/copy-web.mjs",
+    "sync": "npm run copy:web && cap sync",
+    "add:ios": "npm run copy:web && cap add ios",
+    "add:android": "npm run copy:web && cap add android",
+    "open:ios": "cap open ios",
+    "open:android": "cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "@capacitor/local-notifications": "^6.0.0"
+  }
+}

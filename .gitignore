@@ -1,0 +1,13 @@
+# Node / Capacitor tooling
+node_modules/
+
+# Generated web bundle for the native build (rebuilt via `npm run copy:web`)
+www/
+
+# Capacitor native projects are generated on a Mac with `npx cap add ios|android`.
+# Uncomment to keep them out of git, or commit them to version the native shells.
+# ios/
+# android/
+
+# OS / editor cruft
+.DS_Store

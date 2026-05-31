@@ -65,6 +65,33 @@ the JavaScript modules and `data/plan.json`.)
 
 The `.nojekyll` file ensures Pages serves every file as-is.
 
+## Publish to the App Store / Play Store
+
+The same web app is wrapped for the stores with [Capacitor](https://capacitorjs.com/)
+— no rewrite, it bundles these exact files into native iOS/Android shells.
+
+**This part needs a Mac** (Xcode + Android Studio) and developer accounts:
+Apple Developer Program (~£79/$99 a year) and Google Play (one-off $25). The
+build and store submission can't be done from a Linux/CI box.
+
+```bash
+npm install                 # install Capacitor tooling
+npm run add:android         # create the android/ project (one-time)
+npm run add:ios             # create the ios/ project (one-time, Mac only)
+
+npm run sync                # copy the web app in + sync after any web change
+npm run open:android        # build/run/submit from Android Studio
+npm run open:ios            # build/run/submit from Xcode
+```
+
+- `capacitor.config.json` holds the app id (`com.motherwellfc.preseason`) and name.
+- `npm run copy:web` assembles the static app into `www/` (git-ignored); `cap sync`
+  pushes it into the native projects. Re-run `npm run sync` whenever the web app changes.
+- The `android/` and `ios/` folders are generated on first `cap add` — commit them
+  if you want the native shells versioned (see `.gitignore`).
+- Native alarms (local notifications) can replace the calendar-export reminders via
+  `@capacitor/local-notifications`, already listed as a dependency.
+
 ## Editing the training plan
 
 All sessions live in **`data/plan.json`**. It has two parts:
