@@ -940,6 +940,38 @@
       saveDrafts();
     }
 
+    // first launch: pre-populate from the bundled backup (data/seed.json)
+    if (!bowls.length) {
+      const seeded = await DB.getMeta('seeded');
+      if (!seeded) {
+        try {
+          const res = await fetch('data/seed.json');
+          if (res.ok) {
+            const seed = await res.json();
+            if (seed.app === 'slurp' && Array.isArray(seed.bowls)) {
+              for (const b of seed.bowls) {
+                if (!b.id || !b.place) continue;
+                await DB.putBowl(b);
+                bowls.push(b);
+              }
+              for (const r of seed.raters || []) {
+                if (!raters.includes(r)) raters.push(r);
+              }
+              await DB.setMeta('raters', raters);
+              if (!currentRater) currentRater = raters[0] || '';
+              // badges covered by the seed shouldn't toast as new unlocks later
+              earned = BADGES.filter((bd) => bd.test(statsSnapshot())).map((bd) => bd.id);
+              await DB.setMeta('earned', earned);
+              await DB.setMeta('seeded', true);
+              toast(`Loaded ${bowls.length} bowls from your backup 🍜`);
+            }
+          }
+        } catch (e) { /* best-effort — retry on next launch */ }
+      }
+    } else {
+      DB.setMeta('seeded', true); // existing data: never seed over it
+    }
+
     form = blankForm();
     renderGuide();
     setLevelPill();
