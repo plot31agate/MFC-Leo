@@ -446,7 +446,7 @@ body.rating .tabbar, body.rating .top { display: none; }
   font-size: 16px;
   margin: 0 0 -40px auto; /* overlays the content below (usually the photo) */
 }
-.sheet-photo { width: calc(100% + 44px); margin: 0 -22px; max-height: 300px; object-fit: cover; display: block; }
+.sheet-photo { width: calc(100% + 44px); max-width: none; margin: 0 -22px; max-height: 300px; object-fit: cover; display: block; }
 .sheet-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin: 16px 0 4px; }
 .sheet-place { font-size: 23px; font-weight: 800; letter-spacing: -.5px; }
 .sheet-meta { color: var(--muted); font-size: 14px; margin-top: 2px; }
