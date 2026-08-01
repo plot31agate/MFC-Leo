@@ -421,7 +421,10 @@ body.rating .tabbar, body.rating .top { display: none; }
 @keyframes fade { from { opacity: 0; } }
 .sheet {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 41;
-  max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  /* stay clear of the browser address bar: dvh tracks the *visible* viewport on iOS */
+  max-height: calc(84vh - env(safe-area-inset-top));
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
   background: #fff;
   border-radius: 22px 22px 0 0;
   padding: 10px 22px calc(env(safe-area-inset-bottom) + 22px);
@@ -429,8 +432,20 @@ body.rating .tabbar, body.rating .top { display: none; }
   max-width: 640px; margin: 0 auto;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, .18);
 }
+@supports (height: 1dvh) {
+  .sheet { max-height: calc(88dvh - env(safe-area-inset-top)); }
+}
 @keyframes sheetup { from { transform: translateY(100%); } to { transform: none; } }
 .sheet-grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line-2); margin: 4px auto 12px; }
+.sheet-close {
+  position: sticky; top: 4px; z-index: 6;
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255, 255, 255, .95); color: var(--text);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .28);
+  font-size: 16px;
+  margin: 0 0 -40px auto; /* overlays the content below (usually the photo) */
+}
 .sheet-photo { width: calc(100% + 44px); margin: 0 -22px; max-height: 300px; object-fit: cover; display: block; }
 .sheet-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin: 16px 0 4px; }
 .sheet-place { font-size: 23px; font-weight: 800; letter-spacing: -.5px; }

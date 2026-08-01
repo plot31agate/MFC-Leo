@@ -597,6 +597,7 @@
     const detail = [b.firmness && b.firmness !== 'Regular' ? `Noodles: ${b.firmness}` : '', b.spice ? '🌶️'.repeat(b.spice) : '', b.price != null ? `£${b.price.toFixed(2)}` : '', b.rater ? `rated by ${b.rater}` : ''].filter(Boolean).join(' · ');
     $('sheet').innerHTML = `
       <div class="sheet-grab"></div>
+      <button class="sheet-close" data-close-sheet aria-label="Close">✕</button>
       ${b.photo ? `<img class="sheet-photo" src="${b.photo}" alt="Bowl at ${esc(b.place)}" />` : ''}
       <div class="sheet-head">
         <div>
@@ -617,8 +618,10 @@
       </div>`;
     $('sheet').hidden = false;
     $('sheet-backdrop').hidden = false;
+    $('sheet').scrollTop = 0;
     document.body.style.overflow = 'hidden';
     $('sheet').onclick = async (e) => {
+      if (e.target.closest('[data-close-sheet]')) { closeSheet(); return; }
       const act = e.target.closest('[data-act]');
       if (!act) return;
       if (act.dataset.act === 'edit') {
@@ -1028,6 +1031,17 @@
       }
     });
     $('sheet-backdrop').addEventListener('click', closeSheet);
+    // swipe down from the top of the sheet to dismiss it
+    let sheetTouchY = null;
+    $('sheet').addEventListener('touchstart', (e) => {
+      sheetTouchY = $('sheet').scrollTop <= 0 ? e.touches[0].clientY : null;
+    }, { passive: true });
+    $('sheet').addEventListener('touchmove', (e) => {
+      if (sheetTouchY !== null && e.touches[0].clientY - sheetTouchY > 90) {
+        sheetTouchY = null;
+        closeSheet();
+      }
+    }, { passive: true });
 
     // backup
     $('btn-export').addEventListener('click', exportBackup);
