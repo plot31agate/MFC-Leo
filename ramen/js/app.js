@@ -57,6 +57,7 @@
   let editingId = null;
   let form = null;
   let wizStep = 0;
+  let draft = null;
 
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -130,12 +131,40 @@
         photo: fromBowl.photo, thumb: fromBowl.thumb,
       };
       wizStep = STEPS.length - 1; // jump to review, edit sections from there
+    } else if (draft && draft.form) {
+      editingId = null;
+      form = JSON.parse(JSON.stringify(draft.form));
+      wizStep = Math.min(draft.wizStep || 0, STEPS.length - 1);
+      toast('Picking up where you left off 📝');
     } else {
       editingId = null;
       form = blankForm();
       wizStep = 0;
     }
     switchView('rate');
+  }
+
+  // ── drafts (new ratings only — edits are all-or-nothing) ────
+  let draftTimer = null;
+  function formDirty() {
+    if (form.place || form.area || form.photo || form.notes || form.price) return true;
+    if (form.tags.length || form.spice || form.firmness !== 'Regular' || form.style !== 'Tonkotsu' || !form.again) return true;
+    return CRITERIA.some((c) => form.scores[c.key] !== 7);
+  }
+  function persistDraft() {
+    if (!form || editingId) return;
+    if (!formDirty()) { clearDraft(); return; }
+    draft = { form: JSON.parse(JSON.stringify(form)), wizStep, savedAt: Date.now() };
+    DB.setMeta('draft', draft);
+  }
+  function scheduleDraft() {
+    if (editingId) return;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(persistDraft, 500);
+  }
+  function clearDraft() {
+    clearTimeout(draftTimer);
+    if (draft) { draft = null; DB.setMeta('draft', null); }
   }
 
   // ── wizard ──────────────────────────────────────────────────
@@ -342,6 +371,7 @@
     }
 
     updateWizBottom();
+    scheduleDraft(); // remember the current step too
   }
 
   function paintSpice() {
@@ -390,8 +420,13 @@
     renderWiz(); haptic();
   }
   function exitWiz() {
+    if (!editingId && formDirty()) {
+      persistDraft();
+      toast('Draft saved — pick it up any time 📝');
+    } else if (editingId) {
+      toast('Edit discarded');
+    }
     editingId = null;
-    switchView(bowls.length ? 'bowls' : 'stats');
     switchView('bowls');
   }
 
@@ -458,6 +493,7 @@
     if (idx >= 0) bowls[idx] = record; else bowls.push(record);
     const wasEdit = !!editingId;
     editingId = null;
+    clearDraft();
 
     confetti();
     toast(wasEdit ? 'Bowl updated ✅' : `Saved — ${fmtScore(record.overall)}/10 ${verdict(record.overall)}!`);
@@ -511,8 +547,18 @@
       return (b.date || '').localeCompare(a.date || '') || b.createdAt - a.createdAt;
     });
     $('bowls-empty').hidden = bowls.length > 0;
-    $('bowl-list').innerHTML = list.map(bowlCard).join('') ||
-      (bowls.length ? `<div class="empty"><div class="empty-art">🔎</div><h2>No matches</h2><p>Nothing found for “${esc(q)}”.</p></div>` : '');
+    const banner = (draft && !q) ? `
+      <div class="draft-banner">
+        <span class="draft-ico" aria-hidden="true">📝</span>
+        <span class="draft-info">
+          <span class="draft-title">Bowl in progress${draft.form.place ? ` — ${esc(draft.form.place)}` : ''}</span>
+          <span class="draft-meta">Saved at step ${(draft.wizStep || 0) + 1} of ${STEPS.length}</span>
+        </span>
+        <button class="btn btn-primary btn-sm" data-resume-draft>Continue</button>
+        <button class="draft-x" data-discard-draft aria-label="Discard draft">✕</button>
+      </div>` : '';
+    $('bowl-list').innerHTML = banner + (list.map(bowlCard).join('') ||
+      (bowls.length ? `<div class="empty"><div class="empty-art">🔎</div><h2>No matches</h2><p>Nothing found for “${esc(q)}”.</p></div>` : ''));
   }
 
   // ── detail sheet ────────────────────────────────────────────
@@ -868,6 +914,7 @@
     raters = (await DB.getMeta('raters')) || [];
     currentRater = (await DB.getMeta('currentRater')) || raters[0] || '';
     earned = (await DB.getMeta('earned')) || [];
+    draft = (await DB.getMeta('draft')) || null;
 
     form = blankForm();
     renderGuide();
@@ -886,11 +933,22 @@
     $('wiz-back').addEventListener('click', wizBack);
     $('wiz-close').addEventListener('click', exitWiz);
     $('wiz-next').addEventListener('click', wizNext);
+    // any interaction inside the wizard body auto-saves the draft
+    for (const ev of ['input', 'change', 'click']) {
+      $('wiz-body').addEventListener(ev, scheduleDraft);
+    }
 
     // list interactions
     $('bowl-search').addEventListener('input', renderBowls);
     $('bowl-sort').addEventListener('change', renderBowls);
     document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-resume-draft]')) { startRating(); return; }
+      if (e.target.closest('[data-discard-draft]')) {
+        if (confirm('Discard this half-rated bowl?')) {
+          clearDraft(); renderBowls(); toast('Draft discarded');
+        }
+        return;
+      }
       const open = e.target.closest('[data-open]');
       if (open) openSheet(open.dataset.open);
       const addRater = e.target.closest('[data-add-rater]');
