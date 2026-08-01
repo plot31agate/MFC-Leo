@@ -1,5 +1,13 @@
 # Leo · Motherwell FC Pre-Season Training Tracker
 
+> 🍜 **Also in this repo:** [Slurp](ramen/) — a ramen scoring PWA that lives at
+> `/ramen/` on the same GitHub Pages site. Open it on a phone, **Add to Home
+> Screen**, and rate every bowl you eat: weighted scores for broth, noodles,
+> toppings, egg, vibe and value, photos, a leaderboard of places, stats, badges
+> and shareable score cards. Works offline; all data stays on the phone (with
+> export/restore backup). See `ramen/` for the code — same plain
+> HTML/CSS/JS, no-build-step approach as the training tracker.
+
 A simple, phone-friendly web app for Leo to follow his **Motherwell FC U19s/2010s
 Off-Season Programme 26/27** — see what to do each day, read the full session detail,
 tick off progress, and get reminders.

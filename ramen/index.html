@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <title>Slurp · Ramen Ratings</title>
+  <meta name="description" content="Score every bowl. Rate the broth, the noodles, the vibe — find your perfect ramen." />
+  <meta name="theme-color" content="#171017" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Slurp" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="top" id="topbar">
+    <div class="brand">
+      <span class="brand-lantern" aria-hidden="true">🏮</span>
+      <div>
+        <h1>Slurp<span class="bang">!</span></h1>
+        <p class="tagline" id="tagline">the ramen scoring club</p>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ══════════ BOWLS (history) ══════════ -->
+    <section class="view" id="view-bowls" hidden>
+      <div class="toolbar">
+        <div class="searchwrap">
+          <span class="search-ico" aria-hidden="true">🔎</span>
+          <input type="search" id="bowl-search" placeholder="Search bowls, places, styles…" autocomplete="off" />
+        </div>
+        <select id="bowl-sort" class="sort-select" aria-label="Sort bowls">
+          <option value="new">Newest</option>
+          <option value="top">Top rated</option>
+          <option value="low">Lowest rated</option>
+          <option value="price">Priciest</option>
+        </select>
+      </div>
+      <div id="bowl-list" class="bowl-list"></div>
+      <div id="bowls-empty" class="empty" hidden>
+        <div class="empty-art" aria-hidden="true">🍜</div>
+        <h2>No bowls yet</h2>
+        <p>Your ramen journey starts with one slurp.<br/>Rate your first bowl and it'll show up here.</p>
+        <button class="btn btn-primary" data-goto="rate">＋ Rate your first bowl</button>
+      </div>
+    </section>
+
+    <!-- ══════════ RANKS (leaderboard) ══════════ -->
+    <section class="view" id="view-ranks" hidden>
+      <h2 class="view-title">Leaderboard</h2>
+      <p class="view-sub">Places ranked by average bowl score</p>
+      <div id="podium" class="podium"></div>
+      <div id="rank-list" class="rank-list"></div>
+      <div id="ranks-empty" class="empty" hidden>
+        <div class="empty-art" aria-hidden="true">🏆</div>
+        <h2>No rankings yet</h2>
+        <p>Rate bowls at a few different places and<br/>the leaderboard builds itself.</p>
+      </div>
+    </section>
+
+    <!-- ══════════ RATE (form) ══════════ -->
+    <section class="view" id="view-rate" hidden>
+      <h2 class="view-title" id="rate-title">Rate a bowl</h2>
+
+      <!-- photo -->
+      <label class="photo-drop" id="photo-drop">
+        <input type="file" id="photo-input" accept="image/*" capture="environment" hidden />
+        <div class="photo-placeholder" id="photo-placeholder">
+          <span class="photo-ico" aria-hidden="true">📸</span>
+          <strong>Add a photo of the bowl</strong>
+          <small>Tap to shoot or pick from library</small>
+        </div>
+        <img id="photo-preview" alt="Bowl photo" hidden />
+        <button type="button" class="photo-remove" id="photo-remove" hidden aria-label="Remove photo">✕</button>
+      </label>
+
+      <!-- place -->
+      <div class="card">
+        <label class="field">
+          <span class="field-label">Restaurant</span>
+          <input type="text" id="f-place" list="place-suggest" placeholder="e.g. Ramen Dayo" autocomplete="off" />
+          <datalist id="place-suggest"></datalist>
+        </label>
+        <label class="field">
+          <span class="field-label">Area / city <em>optional</em></span>
+          <input type="text" id="f-area" placeholder="e.g. Glasgow" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label">Date</span>
+          <input type="date" id="f-date" />
+        </label>
+      </div>
+
+      <!-- style -->
+      <div class="card">
+        <span class="field-label">Ramen style</span>
+        <div class="chips" id="style-chips"></div>
+      </div>
+
+      <!-- scores -->
+      <div class="card score-card">
+        <div class="score-head">
+          <div>
+            <span class="field-label">The scores</span>
+            <p class="hint">Slide each one — broth counts most</p>
+          </div>
+          <div class="dial" id="dial">
+            <div class="dial-ring" id="dial-ring"><span id="dial-num">–</span></div>
+            <span class="dial-word" id="dial-word">&nbsp;</span>
+          </div>
+        </div>
+        <div id="sliders"></div>
+      </div>
+
+      <!-- extras -->
+      <div class="card">
+        <span class="field-label">Noodle firmness</span>
+        <div class="seg" id="firmness-seg"></div>
+        <span class="field-label" style="margin-top:14px">Spice level</span>
+        <div class="spice" id="spice-row"></div>
+      </div>
+
+      <div class="card">
+        <span class="field-label">Quick tags</span>
+        <div class="chips chips-multi" id="tag-chips"></div>
+        <label class="field" style="margin-top:12px">
+          <span class="field-label">Price <em>optional</em></span>
+          <div class="pricewrap"><span>£</span><input type="number" id="f-price" inputmode="decimal" min="0" step="0.5" placeholder="0.00" /></div>
+        </label>
+        <label class="field">
+          <span class="field-label">Tasting notes <em>optional</em></span>
+          <textarea id="f-notes" rows="3" placeholder="What made it great (or not)…"></textarea>
+        </label>
+        <label class="switch-row">
+          <span><strong>Slurp again?</strong><br/><small>Would you go back for this bowl</small></span>
+          <span class="switch"><input type="checkbox" id="f-again" checked /><i></i></span>
+        </label>
+      </div>
+
+      <div class="card">
+        <span class="field-label">Who's rating</span>
+        <div class="chips" id="rater-chips"></div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btn-cancel" hidden>Cancel</button>
+        <button class="btn btn-primary btn-big" id="btn-save">Save this bowl 🍜</button>
+      </div>
+    </section>
+
+    <!-- ══════════ STATS ══════════ -->
+    <section class="view" id="view-stats" hidden>
+      <h2 class="view-title">Your slurp stats</h2>
+      <div class="stat-grid" id="stat-grid"></div>
+      <div id="best-bowl-wrap"></div>
+      <div class="card" id="style-breakdown-card" hidden>
+        <span class="field-label">Styles you've slurped</span>
+        <div id="style-breakdown"></div>
+      </div>
+      <div class="card">
+        <span class="field-label">Badges</span>
+        <div class="badge-grid" id="badge-grid"></div>
+      </div>
+      <div class="card">
+        <span class="field-label">Backup</span>
+        <p class="hint">Everything lives on this phone. Export a backup file now and then — restore it on any device.</p>
+        <div class="row-gap">
+          <button class="btn btn-ghost" id="btn-export">⬇︎ Export backup</button>
+          <button class="btn btn-ghost" id="btn-import">⬆︎ Restore</button>
+          <input type="file" id="import-input" accept="application/json,.json" hidden />
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ GUIDE ══════════ -->
+    <section class="view" id="view-guide" hidden>
+      <h2 class="view-title">Ramen field guide</h2>
+      <p class="view-sub">Know your bowl before you score it</p>
+      <div id="guide-content"></div>
+    </section>
+  </main>
+
+  <!-- bottom nav -->
+  <nav class="tabbar" aria-label="Main">
+    <button class="tab" data-view="bowls"><span class="tab-ico">🍜</span><span>Bowls</span></button>
+    <button class="tab" data-view="ranks"><span class="tab-ico">🏆</span><span>Ranks</span></button>
+    <button class="tab tab-add" data-view="rate" aria-label="Rate a bowl"><span class="add-circle">＋</span></button>
+    <button class="tab" data-view="stats"><span class="tab-ico">📊</span><span>Stats</span></button>
+    <button class="tab" data-view="guide"><span class="tab-ico">📖</span><span>Guide</span></button>
+  </nav>
+
+  <!-- detail sheet -->
+  <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+  <div class="sheet" id="sheet" hidden aria-modal="true" role="dialog"></div>
+
+  <div class="toast" id="toast" hidden></div>
+  <canvas id="share-canvas" width="1080" height="1400" hidden></canvas>
+
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
