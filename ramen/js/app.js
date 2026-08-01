@@ -57,7 +57,8 @@
   let editingId = null;
   let form = null;
   let wizStep = 0;
-  let draft = null;
+  let drafts = [];
+  let currentDraftId = null;
 
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -120,7 +121,7 @@
       photo: null, thumb: null,
     };
   }
-  function startRating(fromBowl) {
+  function startRating(fromBowl, draftId) {
     if (fromBowl) {
       editingId = fromBowl.id;
       form = {
@@ -131,40 +132,55 @@
         photo: fromBowl.photo, thumb: fromBowl.thumb,
       };
       wizStep = STEPS.length - 1; // jump to review, edit sections from there
-    } else if (draft && draft.form) {
-      editingId = null;
-      form = JSON.parse(JSON.stringify(draft.form));
-      wizStep = Math.min(draft.wizStep || 0, STEPS.length - 1);
-      toast('Picking up where you left off 📝');
+      currentDraftId = null;
     } else {
+      const d = draftId ? drafts.find((x) => x.id === draftId) : null;
       editingId = null;
-      form = blankForm();
-      wizStep = 0;
+      if (d) {
+        currentDraftId = d.id;
+        form = JSON.parse(JSON.stringify(d.form));
+        wizStep = Math.min(d.wizStep || 0, STEPS.length - 1);
+        toast('Picking up where you left off 📝');
+      } else {
+        currentDraftId = null;
+        form = blankForm();
+        wizStep = 0;
+      }
     }
     switchView('rate');
   }
 
   // ── drafts (new ratings only — edits are all-or-nothing) ────
+  // Several bowls can be in progress at once; each gets its own slot.
   let draftTimer = null;
   function formDirty() {
     if (form.place || form.area || form.photo || form.notes || form.price) return true;
     if (form.tags.length || form.spice || form.firmness !== 'Regular' || form.style !== 'Tonkotsu' || !form.again) return true;
     return CRITERIA.some((c) => form.scores[c.key] !== 7);
   }
+  const saveDrafts = () => DB.setMeta('drafts', drafts);
   function persistDraft() {
-    if (!form || editingId) return;
-    if (!formDirty()) { clearDraft(); return; }
-    draft = { form: JSON.parse(JSON.stringify(form)), wizStep, savedAt: Date.now() };
-    DB.setMeta('draft', draft);
+    if (!form || editingId || !document.body.classList.contains('rating')) return;
+    if (!formDirty()) {
+      if (currentDraftId) removeDraft(currentDraftId);
+      return;
+    }
+    if (!currentDraftId) currentDraftId = uid();
+    const rec = { id: currentDraftId, form: JSON.parse(JSON.stringify(form)), wizStep, savedAt: Date.now() };
+    const i = drafts.findIndex((d) => d.id === currentDraftId);
+    if (i >= 0) drafts[i] = rec; else drafts.unshift(rec);
+    saveDrafts();
   }
   function scheduleDraft() {
     if (editingId) return;
     clearTimeout(draftTimer);
     draftTimer = setTimeout(persistDraft, 500);
   }
-  function clearDraft() {
+  function removeDraft(id) {
     clearTimeout(draftTimer);
-    if (draft) { draft = null; DB.setMeta('draft', null); }
+    drafts = drafts.filter((d) => d.id !== id);
+    if (currentDraftId === id) currentDraftId = null;
+    saveDrafts();
   }
 
   // ── wizard ──────────────────────────────────────────────────
@@ -427,6 +443,7 @@
       toast('Edit discarded');
     }
     editingId = null;
+    currentDraftId = null;
     switchView('bowls');
   }
 
@@ -493,7 +510,8 @@
     if (idx >= 0) bowls[idx] = record; else bowls.push(record);
     const wasEdit = !!editingId;
     editingId = null;
-    clearDraft();
+    clearTimeout(draftTimer); // a pending auto-save must not resurrect the draft
+    if (currentDraftId) removeDraft(currentDraftId);
 
     confetti();
     toast(wasEdit ? 'Bowl updated ✅' : `Saved — ${fmtScore(record.overall)}/10 ${verdict(record.overall)}!`);
@@ -547,16 +565,16 @@
       return (b.date || '').localeCompare(a.date || '') || b.createdAt - a.createdAt;
     });
     $('bowls-empty').hidden = bowls.length > 0;
-    const banner = (draft && !q) ? `
+    const banner = (!q && drafts.length) ? drafts.slice().sort((a, b) => b.savedAt - a.savedAt).map((d) => `
       <div class="draft-banner">
         <span class="draft-ico" aria-hidden="true">📝</span>
         <span class="draft-info">
-          <span class="draft-title">Bowl in progress${draft.form.place ? ` — ${esc(draft.form.place)}` : ''}</span>
-          <span class="draft-meta">Saved at step ${(draft.wizStep || 0) + 1} of ${STEPS.length}</span>
+          <span class="draft-title">${d.form.place ? esc(d.form.place) : 'Unnamed bowl'}</span>
+          <span class="draft-meta">In progress · ${esc(d.form.style || '')} · step ${(d.wizStep || 0) + 1} of ${STEPS.length}</span>
         </span>
-        <button class="btn btn-primary btn-sm" data-resume-draft>Continue</button>
-        <button class="draft-x" data-discard-draft aria-label="Discard draft">✕</button>
-      </div>` : '';
+        <button class="btn btn-primary btn-sm" data-resume-draft="${d.id}">Continue</button>
+        <button class="draft-x" data-discard-draft="${d.id}" aria-label="Discard draft">✕</button>
+      </div>`).join('') : '';
     $('bowl-list').innerHTML = banner + (list.map(bowlCard).join('') ||
       (bowls.length ? `<div class="empty"><div class="empty-art">🔎</div><h2>No matches</h2><p>Nothing found for “${esc(q)}”.</p></div>` : ''));
   }
@@ -914,7 +932,13 @@
     raters = (await DB.getMeta('raters')) || [];
     currentRater = (await DB.getMeta('currentRater')) || raters[0] || '';
     earned = (await DB.getMeta('earned')) || [];
-    draft = (await DB.getMeta('draft')) || null;
+    drafts = (await DB.getMeta('drafts')) || [];
+    const legacyDraft = await DB.getMeta('draft'); // pre-multi-draft versions kept one slot
+    if (legacyDraft && legacyDraft.form) {
+      drafts.unshift({ id: uid(), form: legacyDraft.form, wizStep: legacyDraft.wizStep || 0, savedAt: legacyDraft.savedAt || Date.now() });
+      DB.setMeta('draft', null);
+      saveDrafts();
+    }
 
     form = blankForm();
     renderGuide();
@@ -942,10 +966,12 @@
     $('bowl-search').addEventListener('input', renderBowls);
     $('bowl-sort').addEventListener('change', renderBowls);
     document.addEventListener('click', (e) => {
-      if (e.target.closest('[data-resume-draft]')) { startRating(); return; }
-      if (e.target.closest('[data-discard-draft]')) {
+      const res = e.target.closest('[data-resume-draft]');
+      if (res) { startRating(null, res.dataset.resumeDraft); return; }
+      const dis = e.target.closest('[data-discard-draft]');
+      if (dis) {
         if (confirm('Discard this half-rated bowl?')) {
-          clearDraft(); renderBowls(); toast('Draft discarded');
+          removeDraft(dis.dataset.discardDraft); renderBowls(); toast('Draft discarded');
         }
         return;
       }
