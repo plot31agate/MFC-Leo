@@ -1,5 +1,5 @@
 // Offline cache for the Slurp app shell. Bump CACHE when files change.
-const CACHE = 'slurp-v1';
+const CACHE = 'slurp-v2';
 const ASSETS = [
   './',
   './index.html',

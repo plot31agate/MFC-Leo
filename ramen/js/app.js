@@ -1,15 +1,15 @@
-/* Slurp — ramen scoring club. Plain JS, no build step. */
+/* Slurp — rate my ramen. Plain JS, no build step. */
 (() => {
   'use strict';
 
   // ── config ──────────────────────────────────────────────────
   const CRITERIA = [
-    { key: 'broth',    name: 'Broth',        sub: 'depth, balance, aroma',      emoji: '🍲', weight: 30 },
-    { key: 'noodles',  name: 'Noodles',      sub: 'texture, bite, slurp',       emoji: '🍜', weight: 25 },
-    { key: 'toppings', name: 'Toppings',     sub: 'chashu, menma, nori & co.',  emoji: '🥓', weight: 15 },
-    { key: 'egg',      name: 'Ajitama egg',  sub: 'jammy yolk, seasoned white', emoji: '🥚', weight: 10 },
-    { key: 'vibe',     name: 'Vibe',         sub: 'presentation, atmosphere',   emoji: '🏮', weight: 10 },
-    { key: 'value',    name: 'Value',        sub: 'worth every penny?',         emoji: '💴', weight: 10 },
+    { key: 'broth',    name: 'The broth',    sub: 'Depth, balance, aroma. The soul of the bowl — does it haunt you?',          emoji: '🍲', weight: 30 },
+    { key: 'noodles',  name: 'The noodles',  sub: 'Texture, bite, slurpability. Fresh and springy, or sad and soggy?',         emoji: '🍜', weight: 25 },
+    { key: 'toppings', name: 'The toppings', sub: 'Chashu, menma, nori and friends. Do they earn their place?',                emoji: '🥓', weight: 15 },
+    { key: 'egg',      name: 'The egg',      sub: 'The ajitama. Jammy golden yolk, well-seasoned white — or an afterthought?', emoji: '🥚', weight: 10 },
+    { key: 'vibe',     name: 'The vibe',     sub: 'Presentation, atmosphere, service. Did the place feel special?',            emoji: '🏮', weight: 10 },
+    { key: 'value',    name: 'The value',    sub: 'Worth every penny? Would you pay it again tomorrow?',                        emoji: '💴', weight: 10 },
   ];
   const STYLES = ['Tonkotsu', 'Shoyu', 'Shio', 'Miso', 'Tsukemen', 'Tantanmen', 'Curry', 'Veggie/Vegan', 'Other'];
   const FIRMNESS = ['Yawa (soft)', 'Regular', 'Kata (firm)', 'Bari-kata'];
@@ -18,17 +18,25 @@
     [9.5, 'Transcendent'], [9, 'Outstanding'], [8, 'Excellent'], [7, 'Great'],
     [6, 'Solid'], [5, 'Decent'], [4, 'Meh'], [2.5, 'Rough'], [0, 'Avoid'],
   ];
+  const LEVELS = [
+    { at: 0,  emoji: '🐣', name: 'Noodle Newbie' },
+    { at: 3,  emoji: '🥢', name: 'Chopstick Cadet' },
+    { at: 8,  emoji: '🍜', name: 'Slurp Apprentice' },
+    { at: 15, emoji: '🍥', name: 'Broth Scholar' },
+    { at: 25, emoji: '🏮', name: 'Ramen Sensei' },
+    { at: 40, emoji: '👑', name: 'Slurp Master' },
+  ];
   const BADGES = [
-    { id: 'first',    emoji: '🍜', name: 'First Slurp',     req: 'Rate 1 bowl',            test: (S) => S.bowls.length >= 1 },
-    { id: 'novice',   emoji: '🥢', name: 'Noodle Novice',   req: 'Rate 5 bowls',           test: (S) => S.bowls.length >= 5 },
-    { id: 'scholar',  emoji: '🍥', name: 'Broth Scholar',   req: 'Rate 15 bowls',          test: (S) => S.bowls.length >= 15 },
-    { id: 'sensei',   emoji: '🏮', name: 'Ramen Sensei',    req: 'Rate 30 bowls',          test: (S) => S.bowls.length >= 30 },
-    { id: 'explorer', emoji: '🗺️', name: 'Style Explorer',  req: 'Try 4 styles',           test: (S) => S.styles >= 4 },
-    { id: 'wanderer', emoji: '🌏', name: 'Wanderer',        req: 'Visit 5 places',         test: (S) => S.places >= 5 },
-    { id: 'perfect',  emoji: '💯', name: 'Perfect Bowl',    req: 'Score a 9.5+',           test: (S) => S.best >= 9.5 },
-    { id: 'spice',    emoji: '🔥', name: 'Spice Demon',     req: 'Max the spice',          test: (S) => S.maxSpice >= 3 },
-    { id: 'shooter',  emoji: '📸', name: 'Bowl Paparazzi',  req: 'Photograph 10 bowls',    test: (S) => S.photos >= 10 },
-    { id: 'spender',  emoji: '💸', name: 'Big Spender',     req: 'Spend £100 total',       test: (S) => S.spend >= 100 },
+    { id: 'first',    emoji: '🍜', name: 'First Slurp',    req: 'Rate 1 bowl',         test: (S) => S.count >= 1 },
+    { id: 'novice',   emoji: '🥢', name: 'Noodle Novice',  req: 'Rate 5 bowls',        test: (S) => S.count >= 5 },
+    { id: 'scholar',  emoji: '🍥', name: 'Broth Scholar',  req: 'Rate 15 bowls',       test: (S) => S.count >= 15 },
+    { id: 'sensei',   emoji: '🏮', name: 'Ramen Sensei',   req: 'Rate 30 bowls',       test: (S) => S.count >= 30 },
+    { id: 'explorer', emoji: '🗺️', name: 'Style Explorer', req: 'Try 4 styles',        test: (S) => S.styles >= 4 },
+    { id: 'wanderer', emoji: '🌏', name: 'Wanderer',       req: 'Visit 5 places',      test: (S) => S.places >= 5 },
+    { id: 'perfect',  emoji: '💯', name: 'Perfect Bowl',   req: 'Score a 9.5+',        test: (S) => S.best >= 9.5 },
+    { id: 'spice',    emoji: '🔥', name: 'Spice Demon',    req: 'Max the spice',       test: (S) => S.maxSpice >= 3 },
+    { id: 'shooter',  emoji: '📸', name: 'Bowl Paparazzi', req: 'Photograph 10 bowls', test: (S) => S.photos >= 10 },
+    { id: 'spender',  emoji: '💸', name: 'Big Spender',    req: 'Spend £100 total',    test: (S) => S.spend >= 100 },
   ];
   const GUIDE = [
     { emoji: '🐷', title: 'Tonkotsu', body: 'Pork-bone broth boiled for hours until milky and rich. Look for: <strong>silky body without greasiness</strong>, deep porky sweetness, thin firm noodles (Hakata style). Ask for kae-dama — a noodle refill for your leftover broth.' },
@@ -45,9 +53,10 @@
   let bowls = [];
   let raters = [];
   let currentRater = '';
+  let earned = [];
   let editingId = null;
-  let form = null; // live form state
-  let view = 'bowls';
+  let form = null;
+  let wizStep = 0;
 
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -66,32 +75,40 @@
   const fmtScore = (s) => (Math.round(s * 10) / 10).toFixed(1);
   function verdict(s) { for (const [min, word] of VERDICTS) if (s >= min) return word; return ''; }
   function scoreColor(s) {
-    // 0 → dull red, 10 → glowing gold
+    // 0 → deep red, 10 → rich amber-gold (dark enough for white text)
     const t = Math.max(0, Math.min(1, s / 10));
-    const h = 6 + t * 38, sat = 62 + t * 30, l = 50 + t * 8;
-    return `hsl(${h}, ${sat}%, ${l}%)`;
+    return `hsl(${5 + t * 35}, ${68 + t * 14}%, ${46 - t * 2}%)`;
   }
+  const critShort = (c) => {
+    const s = c.name.replace('The ', '');
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
   const fmtDate = (iso) => {
     if (!iso) return '';
     const d = new Date(iso + 'T12:00:00');
     return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
   };
+  function levelFor(count) {
+    let cur = LEVELS[0], next = null;
+    for (const l of LEVELS) { if (count >= l.at) cur = l; else { next = l; break; } }
+    return { cur, next };
+  }
 
   // ── view switching ──────────────────────────────────────────
   const VIEWS = ['bowls', 'ranks', 'rate', 'stats', 'guide'];
   function switchView(name) {
-    view = name;
     for (const v of VIEWS) $(`view-${v}`).hidden = v !== name;
     document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.view === name));
+    document.body.classList.toggle('rating', name === 'rate');
     window.scrollTo({ top: 0 });
     if (name === 'bowls') renderBowls();
     if (name === 'ranks') renderRanks();
     if (name === 'stats') renderStats();
-    if (name === 'rate' && !editingId) resetForm();
+    if (name === 'rate') renderWiz();
     haptic();
   }
 
-  // ── rate form ───────────────────────────────────────────────
+  // ── form state ──────────────────────────────────────────────
   function blankForm() {
     const scores = {};
     for (const c of CRITERIA) scores[c.key] = 7;
@@ -102,164 +119,280 @@
       photo: null, thumb: null,
     };
   }
+  function startRating(fromBowl) {
+    if (fromBowl) {
+      editingId = fromBowl.id;
+      form = {
+        place: fromBowl.place, area: fromBowl.area || '', date: fromBowl.date, style: fromBowl.style,
+        scores: { ...fromBowl.scores }, firmness: fromBowl.firmness || 'Regular', spice: fromBowl.spice || 0,
+        tags: [...(fromBowl.tags || [])], price: fromBowl.price != null ? String(fromBowl.price) : '',
+        notes: fromBowl.notes || '', again: fromBowl.again !== false,
+        photo: fromBowl.photo, thumb: fromBowl.thumb,
+      };
+      wizStep = STEPS.length - 1; // jump to review, edit sections from there
+    } else {
+      editingId = null;
+      form = blankForm();
+      wizStep = 0;
+    }
+    switchView('rate');
+  }
 
-  function buildForm() {
-    // style chips
-    $('style-chips').innerHTML = STYLES.map((s) =>
-      `<button type="button" class="chip" data-style="${esc(s)}">${esc(s)}</button>`).join('');
-    $('style-chips').addEventListener('click', (e) => {
-      const b = e.target.closest('[data-style]');
-      if (!b) return;
-      form.style = b.dataset.style;
-      paintStyleChips(); haptic();
-    });
+  // ── wizard ──────────────────────────────────────────────────
+  const STEPS = [
+    { id: 'basics' }, { id: 'photo' },
+    ...CRITERIA.map((c) => ({ id: 'crit', crit: c })),
+    { id: 'extras' }, { id: 'review' },
+  ];
+  const stepIndexFor = (id, critKey) =>
+    STEPS.findIndex((s) => s.id === id && (!critKey || (s.crit && s.crit.key === critKey)));
 
-    // sliders
-    $('sliders').innerHTML = CRITERIA.map((c) => `
-      <div class="srow">
-        <div class="srow-top">
-          <span class="srow-name">${c.emoji} ${c.name}<span class="wtag">${c.weight}%</span><small>${c.sub}</small></span>
-          <span class="srow-val" id="val-${c.key}">7.0</span>
+  function renderWiz() {
+    const step = STEPS[wizStep];
+    $('wiz-bar').style.width = ((wizStep + 1) / STEPS.length * 100) + '%';
+    $('wiz-back').textContent = wizStep === 0 ? '✕' : '←';
+    $('wiz-close').hidden = wizStep === 0;
+    const body = $('wiz-body');
+    const n = `Step ${wizStep + 1} of ${STEPS.length}`;
+
+    if (step.id === 'basics') {
+      body.innerHTML = `
+        <p class="wiz-kicker">${n} · The basics</p>
+        <h2 class="wiz-h">Where are you slurping?</h2>
+        <p class="wiz-p">Name the place — everything else is optional.</p>
+        <label class="field">
+          <span class="field-label">Restaurant</span>
+          <input type="text" id="f-place" list="place-suggest" placeholder="e.g. Ramen Dayo" autocomplete="off" value="${esc(form.place)}" />
+          <datalist id="place-suggest">${[...new Set(bowls.map((b) => b.place))].sort().map((p) => `<option value="${esc(p)}"></option>`).join('')}</datalist>
+        </label>
+        <label class="field">
+          <span class="field-label">Area / city <em>optional</em></span>
+          <input type="text" id="f-area" placeholder="e.g. Glasgow" autocomplete="off" value="${esc(form.area)}" />
+        </label>
+        <label class="field">
+          <span class="field-label">Date</span>
+          <input type="date" id="f-date" value="${esc(form.date)}" />
+        </label>
+        <div class="field">
+          <span class="field-label">Ramen style</span>
+          <div class="chips" id="style-chips">${STYLES.map((s) => `<button type="button" class="chip ${s === form.style ? 'on' : ''}" data-style="${esc(s)}">${esc(s)}</button>`).join('')}</div>
         </div>
-        <input type="range" min="0" max="10" step="0.5" value="7" data-crit="${c.key}" aria-label="${c.name} score" />
-      </div>`).join('');
-    $('sliders').addEventListener('input', (e) => {
-      const r = e.target.closest('[data-crit]');
-      if (!r) return;
-      form.scores[r.dataset.crit] = parseFloat(r.value);
-      paintSlider(r); paintDial(); haptic(4);
-    });
+        <div class="field">
+          <span class="field-label">Who's rating?</span>
+          <div class="chips" id="rater-chips"></div>
+        </div>`;
+      paintRaters();
+      $('f-place').addEventListener('input', () => {
+        form.place = $('f-place').value;
+        const known = bowls.find((b) => b.place.toLowerCase() === form.place.trim().toLowerCase());
+        if (known && !$('f-area').value && known.area) { form.area = known.area; $('f-area').value = known.area; }
+      });
+      $('f-area').addEventListener('input', () => { form.area = $('f-area').value; });
+      $('f-date').addEventListener('input', () => { form.date = $('f-date').value; });
+      $('style-chips').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-style]');
+        if (!b) return;
+        form.style = b.dataset.style;
+        $('style-chips').querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.style === form.style));
+        haptic();
+      });
 
-    // firmness
-    $('firmness-seg').innerHTML = FIRMNESS.map((f) =>
-      `<button type="button" data-firm="${esc(f)}">${esc(f.split(' ')[0])}</button>`).join('');
-    $('firmness-seg').addEventListener('click', (e) => {
-      const b = e.target.closest('[data-firm]');
-      if (!b) return;
-      form.firmness = b.dataset.firm;
-      paintFirmness(); haptic();
-    });
+    } else if (step.id === 'photo') {
+      body.innerHTML = `
+        <p class="wiz-kicker">${n} · The evidence</p>
+        <h2 class="wiz-h">Shoot the bowl 📸</h2>
+        <p class="wiz-p">Before you touch it. Steam is part of the shot.</p>
+        <label class="photo-drop" id="photo-drop">
+          <input type="file" id="photo-input" accept="image/*" capture="environment" hidden />
+          <div class="photo-placeholder" id="photo-placeholder" ${form.photo ? 'hidden' : ''}>
+            <span class="photo-ico" aria-hidden="true">📸</span>
+            <strong>Add a photo of the bowl</strong>
+            <small>Tap to shoot or pick from library</small>
+          </div>
+          <img id="photo-preview" alt="Bowl photo" ${form.photo ? `src="${form.photo}"` : 'hidden'} />
+          <button type="button" class="photo-remove" id="photo-remove" ${form.photo ? '' : 'hidden'} aria-label="Remove photo">✕</button>
+        </label>`;
+      $('photo-input').addEventListener('change', onPhotoPicked);
+      $('photo-remove').addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        form.photo = null; form.thumb = null;
+        renderWiz();
+      });
 
-    // spice
-    $('spice-row').innerHTML = ['🚫', '🌶️', '🌶️', '🌶️'].map((em, i) =>
-      `<button type="button" data-spice="${i}" aria-label="Spice ${i}">${em}</button>`).join('');
-    $('spice-row').addEventListener('click', (e) => {
-      const b = e.target.closest('[data-spice]');
-      if (!b) return;
-      form.spice = parseInt(b.dataset.spice, 10);
-      paintSpice(); haptic();
-    });
+    } else if (step.id === 'crit') {
+      const c = step.crit;
+      const v = form.scores[c.key];
+      body.innerHTML = `
+        <p class="wiz-kicker">${n} · Counts for ${c.weight}%</p>
+        <span class="wiz-emoji">${c.emoji}</span>
+        <h2 class="wiz-h">${c.name}</h2>
+        <p class="wiz-p">${c.sub}</p>
+        <div class="score-big">
+          <div class="score-big-num" id="crit-num">${v.toFixed(1)}</div>
+          <div class="score-big-word" id="crit-word">${verdict(v)}</div>
+        </div>
+        <div class="srow">
+          <input type="range" min="0" max="10" step="0.5" value="${v}" id="crit-range" aria-label="${c.name} score" />
+          <div class="slider-ends"><span>0 · tragic</span><span>10 · perfect</span></div>
+        </div>`;
+      const range = $('crit-range');
+      const paint = () => {
+        const val = parseFloat(range.value);
+        form.scores[c.key] = val;
+        range.style.setProperty('--p', val * 10);
+        range.style.setProperty('--tc', scoreColor(val));
+        $('crit-num').textContent = val.toFixed(1);
+        $('crit-num').style.color = scoreColor(val);
+        $('crit-word').textContent = verdict(val);
+        $('crit-word').style.color = scoreColor(val);
+        updateWizBottom();
+      };
+      range.addEventListener('input', () => { paint(); haptic(4); });
+      paint();
 
-    // tags
-    $('tag-chips').innerHTML = TAGS.map((t) =>
-      `<button type="button" class="chip" data-tag="${esc(t)}">${esc(t)}</button>`).join('');
-    $('tag-chips').addEventListener('click', (e) => {
-      const b = e.target.closest('[data-tag]');
-      if (!b) return;
-      const t = b.dataset.tag;
-      const i = form.tags.indexOf(t);
-      if (i >= 0) form.tags.splice(i, 1); else form.tags.push(t);
-      paintTags(); haptic();
-    });
+    } else if (step.id === 'extras') {
+      body.innerHTML = `
+        <p class="wiz-kicker">${n} · The details</p>
+        <h2 class="wiz-h">Final touches</h2>
+        <p class="wiz-p">All optional — skip anything you like.</p>
+        <div class="field">
+          <span class="field-label">Noodle firmness</span>
+          <div class="seg" id="firmness-seg">${FIRMNESS.map((f) => `<button type="button" class="${f === form.firmness ? 'on' : ''}" data-firm="${esc(f)}">${esc(f.split(' ')[0])}</button>`).join('')}</div>
+        </div>
+        <div class="field">
+          <span class="field-label">Spice level</span>
+          <div class="spice" id="spice-row">${['🚫', '🌶️', '🌶️', '🌶️'].map((em, i) => `<button type="button" data-spice="${i}" aria-label="Spice ${i}">${em}</button>`).join('')}</div>
+        </div>
+        <div class="field">
+          <span class="field-label">Quick tags</span>
+          <div class="chips" id="tag-chips">${TAGS.map((t) => `<button type="button" class="chip ${form.tags.includes(t) ? 'on' : ''}" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+        </div>
+        <label class="field">
+          <span class="field-label">Price <em>optional</em></span>
+          <div class="pricewrap"><span>£</span><input type="number" id="f-price" inputmode="decimal" min="0" step="0.5" placeholder="0.00" value="${esc(form.price)}" /></div>
+        </label>
+        <label class="field">
+          <span class="field-label">Tasting notes <em>optional</em></span>
+          <textarea id="f-notes" rows="3" placeholder="What made it great (or not)…">${esc(form.notes)}</textarea>
+        </label>
+        <label class="switch-row">
+          <span><strong>Slurp again?</strong><br/><small>Would you go back for this bowl</small></span>
+          <span class="switch"><input type="checkbox" id="f-again" ${form.again ? 'checked' : ''} /><i></i></span>
+        </label>`;
+      paintSpice();
+      $('firmness-seg').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-firm]');
+        if (!b) return;
+        form.firmness = b.dataset.firm;
+        $('firmness-seg').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x.dataset.firm === form.firmness));
+        haptic();
+      });
+      $('spice-row').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-spice]');
+        if (!b) return;
+        form.spice = parseInt(b.dataset.spice, 10);
+        paintSpice(); haptic();
+      });
+      $('tag-chips').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-tag]');
+        if (!b) return;
+        const t = b.dataset.tag;
+        const i = form.tags.indexOf(t);
+        if (i >= 0) form.tags.splice(i, 1); else form.tags.push(t);
+        b.classList.toggle('on', i < 0);
+        haptic();
+      });
+      $('f-price').addEventListener('input', () => { form.price = $('f-price').value; });
+      $('f-notes').addEventListener('input', () => { form.notes = $('f-notes').value; });
+      $('f-again').addEventListener('change', () => { form.again = $('f-again').checked; haptic(); });
 
-    // simple inputs
-    $('f-place').addEventListener('input', () => {
-      form.place = $('f-place').value;
-      const known = bowls.find((b) => b.place.toLowerCase() === form.place.trim().toLowerCase());
-      if (known) {
-        if (!$('f-area').value && known.area) { form.area = known.area; $('f-area').value = known.area; }
-      }
-    });
-    $('f-area').addEventListener('input', () => { form.area = $('f-area').value; });
-    $('f-date').addEventListener('input', () => { form.date = $('f-date').value; });
-    $('f-price').addEventListener('input', () => { form.price = $('f-price').value; });
-    $('f-notes').addEventListener('input', () => { form.notes = $('f-notes').value; });
-    $('f-again').addEventListener('change', () => { form.again = $('f-again').checked; haptic(); });
+    } else if (step.id === 'review') {
+      const s = overall(form.scores);
+      const rows = [
+        { ico: '📍', label: 'Place', value: [form.place || '—', form.area, fmtDate(form.date)].filter(Boolean).join(' · '), go: ['basics'] },
+        { ico: '🍜', label: 'Style', value: form.style + (form.firmness !== 'Regular' ? ` · ${form.firmness}` : '') + (form.spice ? ' · ' + '🌶️'.repeat(form.spice) : ''), go: ['basics'] },
+        ...CRITERIA.map((c) => ({ ico: c.emoji, label: `${critShort(c)} · ${c.weight}%`, value: '', score: form.scores[c.key], go: ['crit', c.key] })),
+        { ico: '💴', label: 'Price & tags', value: [form.price ? `£${form.price}` : '', ...form.tags].filter(Boolean).join(' · ') || 'None added', go: ['extras'] },
+      ];
+      body.innerHTML = `
+        <p class="wiz-kicker">${n} · The verdict</p>
+        <h2 class="wiz-h">${editingId ? 'Review your edits' : 'The final score'}</h2>
+        <div class="review-hero">
+          <div class="review-dial" style="--pct:${s * 10};--dial-c:${scoreColor(s)}"><span>${fmtScore(s)}</span></div>
+          <div class="review-verdict" style="color:${scoreColor(s)}">${verdict(s)}</div>
+          <p class="hint" style="margin-top:6px">${form.again ? '💚 Would slurp again' : '🙅 Would not go back'}${currentRater ? ` · rated by ${esc(currentRater)}` : ''}</p>
+        </div>
+        ${form.photo ? `<button class="review-row" data-go="photo"><img class="review-thumb" src="${form.photo}" alt=""/><span class="r-main"><span class="r-label">Photo</span><span class="r-value">Looking tasty</span></span><span class="r-chev">›</span></button>` : `<button class="review-row" data-go="photo"><span class="r-ico">📸</span><span class="r-main"><span class="r-label">Photo</span><span class="r-value" style="color:var(--muted)">Add one?</span></span><span class="r-chev">›</span></button>`}
+        ${rows.map((r) => `
+          <button class="review-row" data-go="${r.go[0]}" ${r.go[1] ? `data-crit-key="${r.go[1]}"` : ''}>
+            <span class="r-ico">${r.ico}</span>
+            <span class="r-main">
+              <span class="r-label">${esc(r.label)}</span>
+              ${r.value ? `<span class="r-value">${esc(r.value)}</span>` : ''}
+            </span>
+            ${r.score !== undefined ? `<span class="r-score" style="color:${scoreColor(r.score)}">${r.score.toFixed(1)}</span>` : ''}
+            <span class="r-chev">›</span>
+          </button>`).join('')}
+        ${form.notes ? `<div class="sheet-notes">“${esc(form.notes)}”</div>` : ''}`;
+      body.querySelectorAll('[data-go]').forEach((b) =>
+        b.addEventListener('click', () => {
+          wizStep = stepIndexFor(b.dataset.go, b.dataset.critKey);
+          renderWiz(); haptic();
+        }));
+    }
 
-    // photo
-    $('photo-input').addEventListener('change', onPhotoPicked);
-    $('photo-remove').addEventListener('click', (e) => {
-      e.preventDefault(); e.stopPropagation();
-      form.photo = null; form.thumb = null;
-      paintPhoto();
-    });
-
-    // actions
-    $('btn-save').addEventListener('click', saveBowl);
-    $('btn-cancel').addEventListener('click', () => { editingId = null; resetForm(); switchView('bowls'); });
+    updateWizBottom();
   }
 
-  function paintStyleChips() {
-    $('style-chips').querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.style === form.style));
-  }
-  function paintSlider(r) {
-    const v = parseFloat(r.value);
-    r.style.setProperty('--p', v * 10);
-    r.style.setProperty('--tc', scoreColor(v));
-    $(`val-${r.dataset.crit}`).textContent = v.toFixed(1);
-    $(`val-${r.dataset.crit}`).style.color = scoreColor(v);
-  }
-  function paintAllSliders() {
-    $('sliders').querySelectorAll('[data-crit]').forEach((r) => {
-      r.value = form.scores[r.dataset.crit];
-      paintSlider(r);
-    });
-  }
-  function paintDial() {
-    const s = overall(form.scores);
-    const ring = $('dial-ring');
-    ring.style.setProperty('--pct', s * 10);
-    ring.style.setProperty('--dial-c', scoreColor(s));
-    $('dial-num').textContent = fmtScore(s);
-    $('dial-word').textContent = verdict(s);
-    $('dial-word').style.color = scoreColor(s);
-  }
-  function paintFirmness() {
-    $('firmness-seg').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.firm === form.firmness));
-  }
   function paintSpice() {
-    $('spice-row').querySelectorAll('button').forEach((b) => {
+    const row = $('spice-row');
+    if (!row) return;
+    row.querySelectorAll('button').forEach((b) => {
       const i = parseInt(b.dataset.spice, 10);
       b.classList.toggle('on', i === 0 ? form.spice === 0 : (form.spice >= i && i > 0));
     });
   }
-  function paintTags() {
-    $('tag-chips').querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', form.tags.includes(c.dataset.tag)));
-  }
-  function paintPhoto() {
-    const has = !!form.photo;
-    $('photo-preview').hidden = !has;
-    $('photo-placeholder').hidden = has;
-    $('photo-remove').hidden = !has;
-    if (has) $('photo-preview').src = form.photo;
-    else $('photo-preview').removeAttribute('src');
-  }
   function paintRaters() {
-    const chips = raters.map((r) =>
-      `<button type="button" class="chip ${r === currentRater ? 'on' : ''}" data-rater="${esc(r)}">${esc(r)}</button>`).join('');
-    $('rater-chips').innerHTML = chips + `<button type="button" class="chip chip-add" data-add-rater>＋ Add</button>`;
+    const el = $('rater-chips');
+    if (!el) return;
+    el.innerHTML = raters.map((r) =>
+      `<button type="button" class="chip ${r === currentRater ? 'on' : ''}" data-rater="${esc(r)}">${esc(r)}</button>`).join('') +
+      `<button type="button" class="chip chip-add" data-add-rater>＋ Add</button>`;
   }
-  function paintForm() {
-    $('f-place').value = form.place;
-    $('f-area').value = form.area;
-    $('f-date').value = form.date;
-    $('f-price').value = form.price;
-    $('f-notes').value = form.notes;
-    $('f-again').checked = form.again;
-    paintStyleChips(); paintAllSliders(); paintDial();
-    paintFirmness(); paintSpice(); paintTags(); paintPhoto(); paintRaters();
-    $('rate-title').textContent = editingId ? 'Edit bowl' : 'Rate a bowl';
-    $('btn-save').textContent = editingId ? 'Save changes 🍜' : 'Save this bowl 🍜';
-    $('btn-cancel').hidden = !editingId;
-    updatePlaceSuggest();
+
+  function updateWizBottom() {
+    const step = STEPS[wizStep];
+    const s = overall(form.scores);
+    $('wiz-score').innerHTML = `Running score<strong style="color:${scoreColor(s)}">${fmtScore(s)} · ${verdict(s)}</strong>`;
+    const next = $('wiz-next');
+    if (step.id === 'review') next.textContent = editingId ? 'Save changes 🍜' : 'Save this bowl 🍜';
+    else if (step.id === 'photo' && !form.photo) next.textContent = 'Skip';
+    else next.textContent = 'Next';
   }
-  function resetForm() {
-    form = blankForm();
-    paintForm();
+
+  function wizNext() {
+    const step = STEPS[wizStep];
+    if (step.id === 'basics') {
+      form.place = ($('f-place') ? $('f-place').value : form.place).trim();
+      if (!form.place) {
+        toast('Give the place a name first 🏮');
+        $('f-place') && $('f-place').focus();
+        return;
+      }
+    }
+    if (step.id === 'review') { saveBowl(); return; }
+    wizStep = Math.min(wizStep + 1, STEPS.length - 1);
+    renderWiz(); haptic();
   }
-  function updatePlaceSuggest() {
-    const names = [...new Set(bowls.map((b) => b.place))].sort();
-    $('place-suggest').innerHTML = names.map((n) => `<option value="${esc(n)}"></option>`).join('');
+  function wizBack() {
+    if (wizStep === 0) { exitWiz(); return; }
+    wizStep -= 1;
+    renderWiz(); haptic();
+  }
+  function exitWiz() {
+    editingId = null;
+    switchView(bowls.length ? 'bowls' : 'stats');
+    switchView('bowls');
   }
 
   // ── photo compression ───────────────────────────────────────
@@ -272,7 +405,7 @@
       form.photo = drawScaled(img, 1280, 0.82);
       form.thumb = drawScaled(img, 320, 0.7);
       URL.revokeObjectURL(url);
-      paintPhoto();
+      renderWiz();
       toast('Looking tasty 📸');
     };
     img.onerror = () => { URL.revokeObjectURL(url); toast('Could not read that photo'); };
@@ -288,18 +421,23 @@
     return c.toDataURL('image/jpeg', quality);
   }
 
-  // ── save ────────────────────────────────────────────────────
+  // ── save + gamification ─────────────────────────────────────
+  function statsSnapshot() {
+    return {
+      count: bowls.length,
+      styles: new Set(bowls.map((b) => b.style)).size,
+      places: new Set(bowls.map((b) => b.place.trim().toLowerCase())).size,
+      best: bowls.length ? Math.max(...bowls.map((b) => b.overall)) : 0,
+      maxSpice: Math.max(0, ...bowls.map((b) => b.spice || 0)),
+      photos: bowls.filter((b) => b.photo).length,
+      spend: bowls.reduce((s, b) => s + (b.price || 0), 0),
+    };
+  }
   async function saveBowl() {
-    form.place = $('f-place').value.trim();
-    if (!form.place) {
-      toast('Give the place a name first 🏮');
-      $('f-place').focus();
-      return;
-    }
     const record = {
       id: editingId || uid(),
       createdAt: editingId ? (bowls.find((b) => b.id === editingId)?.createdAt || Date.now()) : Date.now(),
-      place: form.place,
+      place: form.place.trim(),
       area: form.area.trim(),
       date: form.date || new Date().toISOString().slice(0, 10),
       style: form.style,
@@ -320,10 +458,20 @@
     if (idx >= 0) bowls[idx] = record; else bowls.push(record);
     const wasEdit = !!editingId;
     editingId = null;
-    resetForm();
+
     confetti();
     toast(wasEdit ? 'Bowl updated ✅' : `Saved — ${fmtScore(record.overall)}/10 ${verdict(record.overall)}!`);
     switchView('bowls');
+    setLevelPill();
+
+    // badge unlocks
+    const S = statsSnapshot();
+    const fresh = BADGES.filter((b) => b.test(S) && !earned.includes(b.id));
+    if (fresh.length) {
+      earned.push(...fresh.map((b) => b.id));
+      DB.setMeta('earned', earned);
+      fresh.forEach((b, i) => setTimeout(() => { toast(`${b.emoji} Badge unlocked — ${b.name}!`); confetti(); }, 2200 + i * 2400));
+    }
   }
 
   // ── bowls list ──────────────────────────────────────────────
@@ -376,8 +524,8 @@
       const v = b.scores[cr.key] ?? 0;
       return `
         <div class="sbar-row">
-          <span class="sbar-name">${cr.emoji} ${cr.name}</span>
-          <span class="sbar-track"><span class="sbar-fill" style="width:${v * 10}%"></span></span>
+          <span class="sbar-name">${cr.emoji} ${critShort(cr)}</span>
+          <span class="sbar-track"><span class="sbar-fill" style="width:${v * 10}%;background:${scoreColor(v)}"></span></span>
           <span class="sbar-val">${v.toFixed(1)}</span>
         </div>`;
     }).join('');
@@ -395,7 +543,7 @@
         <span class="score-pill" style="background:${c}">${fmtScore(b.overall)}<small>/10</small></span>
       </div>
       <p class="again-line">${b.again ? '💚 Would slurp again' : '🙅 Would not go back'} · <span style="color:${c}">${verdict(b.overall)}</span></p>
-      <div class="card" style="margin:10px 0">${bars}</div>
+      <div class="sheet-bars">${bars}</div>
       ${(b.tags || []).length ? `<div class="sheet-tags">${b.tags.map((t) => `<span class="mini-tag">${esc(t)}</span>`).join('')}</div>` : ''}
       ${b.notes ? `<div class="sheet-notes">“${esc(b.notes)}”</div>` : ''}
       <div class="sheet-actions">
@@ -411,15 +559,7 @@
       if (!act) return;
       if (act.dataset.act === 'edit') {
         closeSheet();
-        editingId = b.id;
-        form = {
-          place: b.place, area: b.area || '', date: b.date, style: b.style,
-          scores: { ...b.scores }, firmness: b.firmness || 'Regular', spice: b.spice || 0,
-          tags: [...(b.tags || [])], price: b.price != null ? String(b.price) : '',
-          notes: b.notes || '', again: b.again !== false, photo: b.photo, thumb: b.thumb,
-        };
-        switchView('rate');
-        paintForm();
+        startRating(b);
       } else if (act.dataset.act === 'delete') {
         if (!confirm(`Delete the bowl at ${b.place}? This can't be undone.`)) return;
         await DB.deleteBowl(b.id);
@@ -438,7 +578,7 @@
     document.body.style.overflow = '';
   }
 
-  // ── ranks ───────────────────────────────────────────────────
+  // ── standings ───────────────────────────────────────────────
   function placeStats() {
     const map = new Map();
     for (const b of bowls) {
@@ -484,22 +624,39 @@
   }
 
   // ── stats ───────────────────────────────────────────────────
+  function setLevelPill() {
+    const { cur } = levelFor(bowls.length);
+    $('brand-level').textContent = bowls.length ? `${cur.emoji} ${cur.name}` : '';
+  }
   function renderStats() {
     const n = bowls.length;
-    const places = new Set(bowls.map((b) => b.place.trim().toLowerCase())).size;
+    const S = statsSnapshot();
     const avg = n ? bowls.reduce((s, b) => s + b.overall, 0) / n : 0;
-    const spend = bowls.reduce((s, b) => s + (b.price || 0), 0);
     const best = bowls.slice().sort((a, b) => b.overall - a.overall)[0];
+
+    // level card
+    const { cur, next } = levelFor(n);
+    const prevAt = cur.at;
+    const pct = next ? Math.min(100, ((n - prevAt) / (next.at - prevAt)) * 100) : 100;
+    $('level-card').innerHTML = `
+      <div class="level-card">
+        <span class="level-emoji">${cur.emoji}</span>
+        <span class="level-info">
+          <div class="level-name">${cur.name}</div>
+          <div class="level-next">${next ? `${next.at - n} more bowl${next.at - n === 1 ? '' : 's'} to ${next.emoji} ${next.name}` : 'Top rank — the broth bows to you'}</div>
+          <span class="level-track"><span class="level-fill" style="width:${pct}%"></span></span>
+        </span>
+      </div>`;
+
     $('stat-grid').innerHTML = [
       [n, 'bowls slurped'],
-      [places, places === 1 ? 'place' : 'places'],
+      [S.places, S.places === 1 ? 'place' : 'places'],
       [n ? fmtScore(avg) : '–', 'avg score'],
       [best ? fmtScore(best.overall) : '–', 'best bowl'],
-      [spend ? '£' + (Math.round(spend * 100) / 100).toFixed(2).replace(/\.00$/, '') : '£0', 'invested 🍜'],
+      [S.spend ? '£' + (Math.round(S.spend * 100) / 100).toFixed(2).replace(/\.00$/, '') : '£0', 'invested 🍜'],
       [bowls.filter((b) => b.again).length, 'would repeat'],
     ].map(([num, lbl]) => `<div class="stat-tile"><div class="stat-num">${num}</div><div class="stat-lbl">${lbl}</div></div>`).join('');
 
-    // best bowl hero
     $('best-bowl-wrap').innerHTML = best ? `
       <button class="best-bowl" data-open="${best.id}" style="width:100%">
         ${best.photo ? `<img class="bg" src="${best.photo}" alt="" />` : ''}
@@ -514,7 +671,6 @@
         </span>
       </button>` : '';
 
-    // style breakdown
     const byStyle = new Map();
     for (const b of bowls) {
       if (!byStyle.has(b.style)) byStyle.set(b.style, []);
@@ -527,20 +683,10 @@
     $('style-breakdown').innerHTML = rows.map((r) => `
       <div class="sbar-row">
         <span class="sbar-name">${esc(r.s)} ×${r.n}</span>
-        <span class="sbar-track"><span class="sbar-fill" style="width:${r.avg * 10}%"></span></span>
+        <span class="sbar-track"><span class="sbar-fill" style="width:${r.avg * 10}%;background:${scoreColor(r.avg)}"></span></span>
         <span class="sbar-val">${fmtScore(r.avg)}</span>
       </div>`).join('');
 
-    // badges
-    const S = {
-      bowls,
-      styles: byStyle.size,
-      places,
-      best: best ? best.overall : 0,
-      maxSpice: Math.max(0, ...bowls.map((b) => b.spice || 0)),
-      photos: bowls.filter((b) => b.photo).length,
-      spend,
-    };
     $('badge-grid').innerHTML = BADGES.map((bd) => {
       const got = bd.test(S);
       return `<div class="badge ${got ? '' : 'locked'}">
@@ -558,13 +704,10 @@
     cv.width = W; cv.height = H;
     const ctx = cv.getContext('2d');
 
-    // background
-    const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#1a120e'); g.addColorStop(1, '#2b1a10');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
 
-    // photo
-    const PH = 760;
+    const PH = 720;
     if (b.photo) {
       await new Promise((res) => {
         const img = new Image();
@@ -577,59 +720,53 @@
         img.onerror = res;
         img.src = b.photo;
       });
-      const fade = ctx.createLinearGradient(0, PH - 260, 0, PH);
-      fade.addColorStop(0, 'rgba(26,18,14,0)'); fade.addColorStop(1, 'rgba(26,18,14,1)');
-      ctx.fillStyle = fade; ctx.fillRect(0, PH - 260, W, 260);
     } else {
+      ctx.fillStyle = '#f7f7f7'; ctx.fillRect(0, 0, W, PH);
       ctx.font = '220px serif'; ctx.textAlign = 'center';
-      ctx.fillText('🍜', W / 2, 460);
+      ctx.fillText('🍜', W / 2, 430);
     }
 
     const sys = '-apple-system, "Segoe UI", Roboto, sans-serif';
-    // place + meta
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#f4ece2';
-    ctx.font = `800 64px ${sys}`;
-    ctx.fillText(b.place.slice(0, 26), 60, PH + 40);
-    ctx.fillStyle = '#b39d8c';
+    ctx.fillStyle = '#222222';
+    ctx.font = `800 62px ${sys}`;
+    ctx.fillText(b.place.slice(0, 26), 60, PH + 88);
+    ctx.fillStyle = '#6a6a6a';
     ctx.font = `500 34px ${sys}`;
-    ctx.fillText([b.style, b.area, fmtDate(b.date)].filter(Boolean).join(' · ').slice(0, 48), 60, PH + 96);
+    ctx.fillText([b.style, b.area, fmtDate(b.date)].filter(Boolean).join(' · ').slice(0, 48), 60, PH + 140);
 
-    // score ring
-    const cx = W - 190, cy = PH + 60, R = 110;
-    ctx.lineWidth = 26; ctx.lineCap = 'round';
-    ctx.strokeStyle = '#3a2c22';
+    const cx = W - 190, cy = PH + 105, R = 105;
+    ctx.lineWidth = 24; ctx.lineCap = 'round';
+    ctx.strokeStyle = '#ebebeb';
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
     ctx.strokeStyle = scoreColor(b.overall);
     ctx.beginPath(); ctx.arc(cx, cy, R, -Math.PI / 2, -Math.PI / 2 + (b.overall / 10) * Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = '#f4ece2'; ctx.textAlign = 'center';
-    ctx.font = `800 76px ${sys}`;
-    ctx.fillText(fmtScore(b.overall), cx, cy + 14);
-    ctx.font = `700 26px ${sys}`; ctx.fillStyle = '#b39d8c';
-    ctx.fillText('/ 10 · ' + verdict(b.overall).toUpperCase(), cx, cy + 58);
+    ctx.fillStyle = '#222222'; ctx.textAlign = 'center';
+    ctx.font = `800 72px ${sys}`;
+    ctx.fillText(fmtScore(b.overall), cx, cy + 12);
+    ctx.font = `700 24px ${sys}`; ctx.fillStyle = '#6a6a6a';
+    ctx.fillText('/ 10 · ' + verdict(b.overall).toUpperCase(), cx, cy + 54);
 
-    // bars
-    let y = PH + 190;
+    let y = PH + 250;
     for (const cr of CRITERIA) {
       const v = b.scores[cr.key] ?? 0;
-      ctx.textAlign = 'left'; ctx.fillStyle = '#d8c8b8';
+      ctx.textAlign = 'left'; ctx.fillStyle = '#222222';
       ctx.font = `700 32px ${sys}`;
-      ctx.fillText(`${cr.emoji} ${cr.name}`, 60, y + 12);
+      ctx.fillText(`${cr.emoji} ${critShort(cr)}`, 60, y + 12);
       const bx = 400, bw = 500;
-      ctx.fillStyle = '#3a2c22';
-      roundRect(ctx, bx, y - 12, bw, 24, 12); ctx.fill();
+      ctx.fillStyle = '#ebebeb';
+      roundRect(ctx, bx, y - 10, bw, 20, 10); ctx.fill();
       ctx.fillStyle = scoreColor(v);
-      roundRect(ctx, bx, y - 12, Math.max(24, bw * v / 10), 24, 12); ctx.fill();
-      ctx.textAlign = 'right'; ctx.fillStyle = '#f4ece2';
+      roundRect(ctx, bx, y - 10, Math.max(20, bw * v / 10), 20, 10); ctx.fill();
+      ctx.textAlign = 'right'; ctx.fillStyle = '#222222';
       ctx.font = `800 32px ${sys}`;
       ctx.fillText(v.toFixed(1), W - 60, y + 12);
-      y += 74;
+      y += 72;
     }
 
-    // footer
-    ctx.textAlign = 'center'; ctx.fillStyle = '#7d6a5c';
-    ctx.font = `700 30px ${sys}`;
-    ctx.fillText('🏮 scored with Slurp — the ramen scoring club', W / 2, H - 50);
+    ctx.textAlign = 'center'; ctx.fillStyle = '#b0b0b0';
+    ctx.font = `800 26px ${sys}`;
+    ctx.fillText('S L U R P  ·  R A T E  M Y  R A M E N', W / 2, H - 46);
 
     const blob = await new Promise((res) => cv.toBlob(res, 'image/jpeg', 0.9));
     const file = new File([blob], `slurp-${b.place.replace(/\W+/g, '-').toLowerCase()}.jpg`, { type: 'image/jpeg' });
@@ -681,7 +818,7 @@
         if (!raters.includes(r)) raters.push(r);
       }
       await DB.setMeta('raters', raters);
-      paintRaters(); renderBowls();
+      renderBowls(); setLevelPill();
       toast(`Restored — ${added} new bowl${added === 1 ? '' : 's'} 🍜`);
     } catch (e) {
       toast('That file didn\'t look like a Slurp backup');
@@ -724,23 +861,31 @@
 
   // ── init ────────────────────────────────────────────────────
   async function init() {
+    // splash: remove from DOM once its exit animation finishes
+    setTimeout(() => { const sp = $('splash'); sp && sp.remove(); }, 2400);
+
     bowls = await DB.allBowls();
     raters = (await DB.getMeta('raters')) || [];
     currentRater = (await DB.getMeta('currentRater')) || raters[0] || '';
+    earned = (await DB.getMeta('earned')) || [];
 
     form = blankForm();
-    buildForm();
     renderGuide();
-    paintForm();
+    setLevelPill();
 
     // nav
     document.querySelectorAll('.tab').forEach((t) =>
       t.addEventListener('click', () => {
-        if (t.dataset.view !== 'rate') editingId = null;
-        switchView(t.dataset.view);
+        if (t.dataset.view === 'rate') startRating();
+        else { editingId = null; switchView(t.dataset.view); }
       }));
     document.querySelectorAll('[data-goto]').forEach((b) =>
-      b.addEventListener('click', () => switchView(b.dataset.goto)));
+      b.addEventListener('click', () => startRating()));
+
+    // wizard chrome
+    $('wiz-back').addEventListener('click', wizBack);
+    $('wiz-close').addEventListener('click', exitWiz);
+    $('wiz-next').addEventListener('click', wizNext);
 
     // list interactions
     $('bowl-search').addEventListener('input', renderBowls);
@@ -776,7 +921,8 @@
       e.target.value = '';
     });
 
-    switchView(bowls.length ? 'bowls' : 'rate');
+    if (bowls.length) switchView('bowls');
+    else startRating();
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
